@@ -9,8 +9,13 @@ namespace ConsoleApp1
     public class Population
     {
 
-        const int kLength = 7;
-        const int kCrossover = kLength / 2;
+        public static int numWorkplaces;
+        public static int numWorkers;
+        public static int turnDuration; // 8 horas (expresado en minutos)
+        public static ArrayList errorIndex = new ArrayList(); // R: indice de rotura
+        public static ArrayList timeIndex = new ArrayList(); // T: tiempo que se demora el trabajador en un puesto de trabajo
+
+        int kCrossover;
         const int kInitialPopulation = 1000;
         const int kPopulationLimit = 1000;
         const int kMin = 0;
@@ -29,17 +34,21 @@ namespace ConsoleApp1
 
         int CurrentPopulation = kInitialPopulation;
         int Generation = 1;
-        bool Best2 = true;
 
-        public Population(int n)
+        public Population(int nwr, int nwp, int td, ArrayList ei, ArrayList ti)
         {
-            //
-            // TODO: Add constructor logic here
-            //
+            numWorkers = nwr;
+            numWorkplaces = nwp;
+            turnDuration = td;
+            errorIndex = (ArrayList)ei.Clone();
+            timeIndex = (ArrayList)ti.Clone();
+
+            kCrossover = numWorkplaces / 2;
+
             for (int i = 0; i < kInitialPopulation; i++)
             {
-                ListGenome aGenome = new ListGenome(kLength*n, kMin, kMax);
-                aGenome.SetCrossoverPoint(kCrossover*n);
+                ListGenome aGenome = new ListGenome(numWorkplaces * numWorkers, kMin, kMax);
+                aGenome.SetCrossoverPoint(kCrossover* numWorkers);
                 aGenome.CalculateFitness();
                 Genomes.Add(aGenome);
             }
@@ -76,6 +85,8 @@ namespace ConsoleApp1
             // determine who can reproduce
             GenomeReproducers.Clear();
             GenomeResults.Clear();
+            
+
             for (int i = 0; i < Genomes.Count; i++)
             {
                 if (((Genome)Genomes[i]).CanReproduce(kReproductionFitness))
@@ -88,12 +99,6 @@ namespace ConsoleApp1
             DoCrossover(GenomeReproducers);
 
             Genomes = (ArrayList)GenomeResults.Clone();
-
-            // mutate a few genes in the new population
-            for (int i = 0; i < Genomes.Count; i++)
-            {
-                Mutate((Genome)Genomes[i]);
-            }
 
             // calculate fitness of all the genes
             for (int i = 0; i < Genomes.Count; i++)
@@ -122,6 +127,14 @@ namespace ConsoleApp1
         }
 
         private double crossoverRate = 0.80;
+
+        public void initializeArray(ArrayList array)
+        {
+            for(int i=0; i<CurrentPopulation; i++)
+            {
+                array.Add(0);
+            }
+        }
 
         public void DoCrossover(ArrayList genes)
         {
@@ -172,7 +185,7 @@ namespace ConsoleApp1
             }
 
             // now cross them over and add them according to fitness
-            for (int i = 0; i < GeneDads.Count; i += 2)
+            for (int i = 0; i < GeneDads.Count; i += 1)
             {
                 int pidx1 = RouletteSelection();
                 int pidx2 = RouletteSelection();
@@ -196,9 +209,6 @@ namespace ConsoleApp1
                 GenomeResults.Add(child2);
                 
             }
-            Genomes.Clear();
-            for (int i = 0; i < CurrentPopulation; i++)
-                Genomes.Add(GenomeResults[i]);
 
 
 

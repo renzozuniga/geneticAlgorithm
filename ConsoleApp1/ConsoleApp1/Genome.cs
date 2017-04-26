@@ -8,7 +8,7 @@ namespace ConsoleApp1
     /// Summary description for Genome.
     /// </summary>
     public abstract class Genome : IComparable
-    {
+    {      
         public long Length;
         public int CrossoverPoint;
         public int MutationIndex;

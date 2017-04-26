@@ -34,16 +34,25 @@ namespace ConsoleApp1
 
         public ListGenome(long length, object min, object max)
         {
-            //
-            // TODO: Add constructor logic here
-            //
             Length = length;
             TheMin = (int)min;
             TheMax = (int)max;
-            for (int i = 0; i < Length; i++)
+
+            for (int i = 0; i < Population.numWorkers; i++)
             {
-                int nextValue = (int)GenerateGeneValue(min, max);
-                TheArray.Add(nextValue);
+                int ind = TheSeed.Next(0, Population.numWorkplaces);
+                for (int j = 0; j < Population.numWorkplaces; j++)
+                {
+                    if (j == ind)
+                    {
+                        int nextValue = (int)GenerateGeneValue(min, max);
+                        TheArray.Add(nextValue);
+
+                    } else
+                    {
+                        TheArray.Add(0);
+                    }
+                }
             }
         }
 
@@ -86,51 +95,32 @@ namespace ConsoleApp1
 
         }
 
-        // This fitness function calculates the closest product sum
-        private float CalculateClosestProductSum()
+        // This fitness function calculates the production from the current genome
+        private float CalculateProduction()
         {
-            // fitness for a perfect number
+            int Xij, Rij, Tij, ind;
+            CurrentFitness = 0;
+            for (int i = 0; i < Population.numWorkplaces; i++)
+            {
+                for (int j = 0; j < Population.numWorkers; j++)
+                {
+                    ind = j * Population.numWorkplaces + i;
+                    Xij = (int)TheArray[ind];
+                    Rij = (int)Population.errorIndex[ind];
+                    Tij = (int)Population.timeIndex[ind];
 
-            float sum = 0.0f;
-            float product = 1.0f;
-            for (int i = 0; i < Length; i++)
-            {
-                sum += (int)TheArray[i];
-                product *= (int)TheArray[i];
-            }
-            if (product == sum)
-            {
-                CurrentFitness = 1;
-            }
-            else
-            {
-                CurrentFitness = Math.Abs(Math.Abs(1.0f / (product - sum)) - 0.02f);
+                    int duration = Population.turnDuration;
+
+                    CurrentFitness += (float)Math.Truncate((double)(duration / ((1 + Rij) * Tij * Xij)));
+                }
             }
 
             return CurrentFitness;
         }
 
-
-        // This fitness function calculates the closest product sum
-        private float CalculateClosestSumTo10()
-        {
-            float sum = 0.0f;
-            for (int i = 0; i < Length; i++)
-            {
-                sum += (int)TheArray[i];
-            }
-
-            if (sum == 10)
-                return 1;
-            else
-                return Math.Abs(Math.Abs(1.0f / (sum - 10)) - 0.02f);
-
-        }
-
         public override float CalculateFitness()
         {
-            CurrentFitness = CalculateClosestProductSum();
-            //			CurrentFitness =  CalculateClosestSumTo10();
+            CurrentFitness = CalculateProduction();
             return CurrentFitness;
         }
 
