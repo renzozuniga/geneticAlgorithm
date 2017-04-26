@@ -98,7 +98,8 @@ namespace ConsoleApp1
         // This fitness function calculates the production from the current genome
         private float CalculateProduction()
         {
-            int Xij, Rij, Tij, ind;
+            int Xij, ind;
+            double Rij, Tij;
             CurrentFitness = 0;
             for (int i = 0; i < Population.numWorkplaces; i++)
             {
@@ -106,12 +107,12 @@ namespace ConsoleApp1
                 {
                     ind = j * Population.numWorkplaces + i;
                     Xij = (int)TheArray[ind];
-                    Rij = (int)Population.errorIndex[ind];
-                    Tij = (int)Population.timeIndex[ind];
+                    Rij = (double)Population.errorIndex[ind];
+                    Tij = (double)Population.timeIndex[ind];
 
                     int duration = Population.turnDuration;
-
-                    CurrentFitness += (float)Math.Truncate((double)(duration / ((1 + Rij) * Tij * Xij)));
+                    if(Xij!=0)
+                        CurrentFitness += (float)Math.Truncate((double)(duration / ((1 + Rij) * Tij * Xij)));
                 }
             }
 

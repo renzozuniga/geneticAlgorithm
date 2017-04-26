@@ -12,35 +12,40 @@ namespace ConsoleApp1
         /// The main entry point for the application.
         /// </summary>
         /// 
+        public static void readArrays(System.IO.StreamReader file, int numWorkplaces, int numWorkers, ArrayList array)
+        {
+            String line;
+            for (int i = 0; i < numWorkers; i++)
+            {
+                line = file.ReadLine();
+                String[] data = line.Split(',');
+                for (int j = 0; j < numWorkplaces; j++)
+                {
+                    array.Add(Convert.ToDouble(data[j]));
+                }
+            }
+        }
+
+        public static void readDataInput(int numWorkplaces, ref int numWorkers, ArrayList errorIndex, ArrayList timeIndex)
+        {
+            // Read the file and display it line by line.
+            System.IO.StreamReader file = new System.IO.StreamReader("data_input.txt");
+            numWorkers = Convert.ToInt32(file.ReadLine());
+            readArrays(file, numWorkplaces, numWorkers, errorIndex);
+            readArrays(file, numWorkplaces, numWorkers, timeIndex);
+            file.Close();
+        }
 
         [STAThread]
         static void Main(string[] args)
         {
-            int numWorkers = 3;
+            int numWorkplaces = 7;
             int turnDuration = 8 * 60; // 8 horas (expresado en minutos)
-
+            int numWorkers=0;
             ArrayList errorIndex = new ArrayList(); // R: indice de rotura
             ArrayList timeIndex = new ArrayList(); // T: tiempo que se demora el trabajador en un puesto de trabajo
 
-            Console.WriteLine("Ingrese el número de trabajadores");
-            int numWorkplaces = Console.Read();
-
-            Console.WriteLine("Ingrese los indices de rotura de los trabajadores ("+numWorkers*numWorkplaces+")");
-            int r, t;
-
-            for (int i = 0; i< numWorkers * numWorkplaces; i++)
-            {
-                r = Console.Read();
-                errorIndex.Add(r);
-            }
-
-            Console.WriteLine("Ingrese los indices de tiempo de los trabajadores (" + numWorkers * numWorkplaces + ")");
-
-            for (int i = 0; i < numWorkers * numWorkplaces; i++)
-            {
-                t = Console.Read();
-                timeIndex.Add(t);
-            }
+            readDataInput(numWorkplaces,ref numWorkers,errorIndex,timeIndex);
 
             Population TestPopulation = new Population(numWorkers, numWorkplaces, turnDuration, errorIndex, timeIndex);
             TestPopulation.WriteNextGeneration();

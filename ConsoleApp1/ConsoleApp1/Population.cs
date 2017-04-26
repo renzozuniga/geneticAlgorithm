@@ -96,6 +96,7 @@ namespace ConsoleApp1
             }
 
             // do the crossover of the genes and add them to the population
+            //CurrentPopulation = GenomeReproducers.Count; 
             DoCrossover(GenomeReproducers);
 
             Genomes = (ArrayList)GenomeResults.Clone();
