@@ -8,7 +8,7 @@ namespace ConsoleApp1
     /// </summary>
     public class ListGenome : Genome
     {
-        ArrayList TheArray = new ArrayList();
+        public ArrayList TheArray = new ArrayList();
         public static Random TheSeed = new Random((int)DateTime.Now.Ticks);
         int TheMin = 0;
         int TheMax = 2;
@@ -146,6 +146,17 @@ namespace ConsoleApp1
             theGene.TheMax = TheMax;
         }
 
+        public override void CopyGene(Genome dest)
+        {
+            ListGenome theGene = (ListGenome)dest;
+            theGene.Length = Length;
+            theGene.TheMin = TheMin;
+            theGene.TheMax = TheMax;
+            for(int i=0; i<Length; i++)
+            {
+                theGene.TheArray.Add(TheArray[i]);
+            }
+        }
 
         public override Genome Crossover(Genome g)
         {
@@ -199,8 +210,7 @@ namespace ConsoleApp1
             genome2.CopyGeneInfo(child1);
             genome2.CopyGeneInfo(child2);
 
-            initializeArray(child1);
-            initializeArray(child2);
+           
 
             for (int i = 0; i < Length; i++)
             {

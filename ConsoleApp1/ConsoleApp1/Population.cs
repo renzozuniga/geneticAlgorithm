@@ -37,9 +37,9 @@ namespace ConsoleApp1
 
         public Population(int nwr, int nwp, int td, ArrayList ei, ArrayList ti)
         {
-            numWorkers = nwr;
-            numWorkplaces = nwp;
-            turnDuration = td;
+            numWorkers = nwr;    //número de trabajadores
+            numWorkplaces = nwp;    //número de puestos de trabajo
+            turnDuration = td;  //tiempo de duración del turno
             errorIndex = (ArrayList)ei.Clone();
             timeIndex = (ArrayList)ti.Clone();
 
@@ -51,6 +51,7 @@ namespace ConsoleApp1
                 aGenome.SetCrossoverPoint(kCrossover* numWorkers);
                 aGenome.CalculateFitness();
                 Genomes.Add(aGenome);
+                
             }
 
             RankPopulation();
@@ -72,15 +73,15 @@ namespace ConsoleApp1
 
 
             // check who can die
-            for (int i = 0; i < Genomes.Count; i++)
+            /*for (int i = 0; i < Genomes.Count; i++)
             {
                 if (((Genome)Genomes[i]).CanDie(kDeathFitness))
                 {
                     Genomes.RemoveAt(i);
                     i--;
                 }
-            }
-
+            }*/
+            
 
             // determine who can reproduce
             GenomeReproducers.Clear();
@@ -193,19 +194,52 @@ namespace ConsoleApp1
                 Genome parent1, parent2, child1, child2;
                 parent1 = ((Genome)GeneDads[pidx1]);
                 parent2 = ((Genome)GeneMoms[pidx2]);
-
+                bool valido1 = isValidGenome((ListGenome)parent1);
+                bool valido2 = isValidGenome((ListGenome)parent2);
+                while (!valido1)
+                {
+                    pidx1 = RouletteSelection();
+                    parent1 = ((Genome)GeneDads[pidx1]);
+                }
+                while (!valido2)
+                {
+                    pidx2 = RouletteSelection();
+                    parent2 = ((Genome)GeneMoms[pidx2]);
+                }
+                
                 if (ListGenome.TheSeed.NextDouble() < crossoverRate)
                 {
                     parent1.Crossover2(ref parent2, out child1, out child2);
+                    if (!isValidGenome((ListGenome)child1))
+                    {
+                        child1 = parent1;
+                    }
+                    if (!isValidGenome((ListGenome)child2))
+                    {
+                        child2 = parent2;
+                    }
                 }
                 else
                 {
                     child1 = parent1;
                     child2 = parent2;
                 }
+                ListGenome child1Crossover = new ListGenome();
+                ListGenome child2Crossover = new ListGenome();
+                child1.CopyGene(child1Crossover);
+                child2.CopyGene(child2Crossover);
+
                 child1.Mutate();
                 child2.Mutate();
 
+                if (!isValidGenome((ListGenome)child1))
+                {
+                    child1 = child1Crossover;
+                }
+                if (!isValidGenome((ListGenome)child2))
+                {
+                    child2 = child2Crossover;
+                }
                 GenomeResults.Add(child1);
                 GenomeResults.Add(child2);
                 
@@ -213,6 +247,24 @@ namespace ConsoleApp1
 
 
 
+        }
+
+        public bool isValidGenome(ListGenome genome)
+        {
+            int cont = 0;
+            for(int i=0; i<numWorkers; i++)
+            {
+                int sumWorkerWorkplace = 0;  //Variable que suma los 7 slots de puestos de trabajo de un trabajador.
+                for(int j=0; j<numWorkplaces; j++)
+                {
+                    sumWorkerWorkplace += (int)genome.TheArray[cont];
+                    if (sumWorkerWorkplace > 1)   //Restricción: Un trabajador solo puede estar en un puesto de trabajo.
+                        return false;
+                    cont++;
+                }
+                
+            }
+            return true;
         }
 
         public void WriteNextGeneration()
