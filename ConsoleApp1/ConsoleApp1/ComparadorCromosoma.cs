@@ -5,24 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace AlgoritmoGenetico
 {
     /// <summary>
 	/// Compares genomes by fitness
 	/// </summary>
-	public sealed class GenomeComparer : IComparer
+	public sealed class ComparadorCromosoma : IComparer
     {
-        public GenomeComparer()
+        public ComparadorCromosoma()
         {
         }
         public int Compare(object x, object y)
         {
-            if (!(x is Genome) || !(y is Genome))
-                throw new ArgumentException("Not of type Genome");
+            if (!(x is Cromosoma) || !(y is Cromosoma))
+                throw new ArgumentException("No es de la clase Cromosoma");
 
-            if (((Genome)x).CurrentFitness > ((Genome)y).CurrentFitness)
+            if (((Cromosoma)x).FitnessActual > ((Cromosoma)y).FitnessActual)
                 return 1;
-            else if (((Genome)x).CurrentFitness == ((Genome)y).CurrentFitness)
+            else if (((Cromosoma)x).FitnessActual == ((Cromosoma)y).FitnessActual)
                 return 0;
             else
                 return -1;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace ConsoleApp1 
+namespace AlgoritmoGenetico 
 {
     /// <summary>
     /// Summary description for Class1.
@@ -42,18 +42,23 @@ namespace ConsoleApp1
             int numWorkplaces = 7;
             int turnDuration = 8 * 60; // 8 horas (expresado en minutos)
             int numWorkers=0;
+            ArrayList maxTrabajadoresEnPuesto = new ArrayList();
+            for(int i=0; i<numWorkplaces; i++)
+            {
+                maxTrabajadoresEnPuesto[i] = 2;
+            } 
             ArrayList errorIndex = new ArrayList(); // R: indice de rotura
             ArrayList timeIndex = new ArrayList(); // T: tiempo que se demora el trabajador en un puesto de trabajo
 
             readDataInput(numWorkplaces,ref numWorkers,errorIndex,timeIndex);
 
-            Population TestPopulation = new Population(numWorkers, numWorkplaces, turnDuration, errorIndex, timeIndex);
-            TestPopulation.WriteNextGeneration();
+            Poblacion TestPopulation = new Poblacion(numWorkers, numWorkplaces, turnDuration, errorIndex, timeIndex);
+            TestPopulation.ImprimirGeneracion();
 
             for (int i = 0; i < 1000; i++)
             {
-                TestPopulation.NextGeneration();
-                TestPopulation.WriteNextGeneration();
+                TestPopulation.SiguienteGeneracion();
+                TestPopulation.ImprimirGeneracion();
             }
 
             Console.ReadLine();
