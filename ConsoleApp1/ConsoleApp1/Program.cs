@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace AlgoritmoGenetico 
+namespace AlgoritmoGenetico
 {
     /// <summary>
     /// Summary description for Class1.
@@ -26,40 +26,107 @@ namespace AlgoritmoGenetico
             }
         }
 
-        public static void readDataInput(int numWorkplaces, ref int numWorkers, ArrayList errorIndex, ArrayList timeIndex)
+        public static void readDataInput(ref int numPuestosdeTrabajo, ref int numTrabajadores, ArrayList indicesError, ArrayList indicesTiempo, ArrayList vacantes)
         {
             // Read the file and display it line by line.
-            System.IO.StreamReader file = new System.IO.StreamReader("data_input.txt");
-            numWorkers = Convert.ToInt32(file.ReadLine());
-            readArrays(file, numWorkplaces, numWorkers, errorIndex);
-            readArrays(file, numWorkplaces, numWorkers, timeIndex);
+            System.IO.StreamReader file = new System.IO.StreamReader("prueba.csv");
+
+            //Lectura de numero de trabajadores
+            string line = file.ReadLine();
+            string[] values = line.Split(',');
+            numTrabajadores = Convert.ToInt32(values[1]);
+
+            //Lectura de numero de puestos de trabajo
+            line = file.ReadLine();
+            values = line.Split(',');
+            numPuestosdeTrabajo = Convert.ToInt32(values[1]);
+
+            //Lectura de vacantes
+            line = file.ReadLine();
+            values = line.Split(',');
+            for(int i = 0; i < numPuestosdeTrabajo; i++)
+            {
+                vacantes.Add(Convert.ToInt32(values[i + 1]));
+            }
+
+            line = file.ReadLine();  //cabecera indice Error
+
+            //Lectura de indices de error de trabajadores
+            for (int i=0; i<numTrabajadores; i++)
+            {
+                line = file.ReadLine();
+                values = line.Split(',');
+                for(int j = 0; j < numPuestosdeTrabajo; j++)
+                {
+                    indicesError.Add(Convert.ToDouble(values[j+1]));
+                }
+            }
+
+            line = file.ReadLine();  //cabecera indice Tiempos
+
+            //Lectura de indices de tiempos de trabajadores
+            for (int i = 0; i < numTrabajadores; i++)
+            {
+                line = file.ReadLine();
+                values = line.Split(',');
+                for (int j = 0; j < numPuestosdeTrabajo; j++)
+                {
+                    indicesTiempo.Add(Convert.ToInt32(values[j+1]));
+                }
+            }
             file.Close();
         }
 
         [STAThread]
         static void Main(string[] args)
         {
-            int numWorkplaces = 7;
-            int turnDuration = 8 * 60; // 8 horas (expresado en minutos)
-            int numWorkers=0;
-            ArrayList maxTrabajadoresEnPuesto = new ArrayList();
-            for(int i=0; i<numWorkplaces; i++)
+            int numPuestosdeTrabajo = 0;
+            int duracionTurno = 8 * 60; // 8 horas (expresado en minutos)
+            int numTrabajadores = 0;
+
+            ArrayList indicesError = new ArrayList(); // R: indice de rotura
+            ArrayList indicesTiempo = new ArrayList(); // T: tiempo que se demora el trabajador en un puesto de trabajo
+            ArrayList vacantes = new ArrayList(); // Vacantes por puesto de trabajo
+
+            readDataInput(ref numPuestosdeTrabajo, ref numTrabajadores, indicesError, indicesTiempo, vacantes);
+
+            Poblacion TestPopulation = new Poblacion(numTrabajadores, numPuestosdeTrabajo, duracionTurno, vacantes, indicesError, indicesTiempo);
+            Cromosoma mejorCromosoma = TestPopulation.obtenerMejorCromosoma();
+            Cromosoma ultimoCromosoma = new Cromosoma();
+
+            int generacion = 1;
+            int repetido = 0;
+            int i = 0;
+
+            Console.WriteLine("Generación " + generacion);
+            mejorCromosoma.mostrarCromosoma();
+
+            while( i < 1000 && repetido < 5)
             {
-                maxTrabajadoresEnPuesto[i] = 2;
-            } 
-            ArrayList errorIndex = new ArrayList(); // R: indice de rotura
-            ArrayList timeIndex = new ArrayList(); // T: tiempo que se demora el trabajador en un puesto de trabajo
 
-            readDataInput(numWorkplaces,ref numWorkers,errorIndex,timeIndex);
-
-            Poblacion TestPopulation = new Poblacion(numWorkers, numWorkplaces, turnDuration, errorIndex, timeIndex);
-            TestPopulation.ImprimirGeneracion();
-
-            for (int i = 0; i < 1000; i++)
-            {
                 TestPopulation.SiguienteGeneracion();
-                TestPopulation.ImprimirGeneracion();
+                Cromosoma nuevoCromosoma = TestPopulation.obtenerMejorCromosoma();
+                if (nuevoCromosoma.FitnessActual > mejorCromosoma.FitnessActual)
+                {
+                    mejorCromosoma = nuevoCromosoma;
+                }
+
+                if (Math.Truncate(nuevoCromosoma.FitnessActual) == Math.Truncate(ultimoCromosoma.FitnessActual))
+                {
+                    repetido++;
+                } else
+                {
+                    repetido = 0;
+                }
+                i++;
+                generacion++;
+                ultimoCromosoma = nuevoCromosoma;
+                nuevoCromosoma.mostrarCromosoma();
+                Console.WriteLine("Generación " + generacion);
             }
+            mejorCromosoma.mostrarCromosoma();
+            mejorCromosoma.mostrarAsignaciones();
+            Console.WriteLine(mejorCromosoma.esValido());
 
             Console.ReadLine();
         }

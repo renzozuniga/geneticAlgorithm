@@ -12,6 +12,7 @@ namespace AlgoritmoGenetico
         public static int numPuestosDeTrabajo;
         public static int numTrabajadores;
         public static int duracionTurno; // 8 horas (expresado en minutos)
+        public static ArrayList vacantes = new ArrayList();
         public static ArrayList indiceError = new ArrayList(); // R: indice de rotura
         public static ArrayList indiceTiempo = new ArrayList(); // T: tiempo que se demora el trabajador en un puesto de trabajo
 
@@ -34,11 +35,12 @@ namespace AlgoritmoGenetico
         int PoblacionActual = poblacionInicial;
         int Generacion = 1;
 
-        public Poblacion(int nwr, int nwp, int td, ArrayList ei, ArrayList ti)
+        public Poblacion(int nwr, int nwp, int td, ArrayList mTP, ArrayList ei, ArrayList ti)
         {
             numTrabajadores = nwr;    //número de trabajadores
             numPuestosDeTrabajo = nwp;    //número de puestos de trabajo
             duracionTurno = td;  //tiempo de duración del turno
+            vacantes = (ArrayList)mTP.Clone();
             indiceError = (ArrayList)ei.Clone();
             indiceTiempo = (ArrayList)ti.Clone();
 
@@ -81,6 +83,9 @@ namespace AlgoritmoGenetico
 
         public void Cruce(ArrayList cromosomas)
         {
+            int cantidadMalos = 0;
+
+
             CromosomasResultantes.Clear();
             ArrayList CromosomasMadre = new ArrayList();
             ArrayList CromosomasPadre = new ArrayList();
@@ -133,18 +138,24 @@ namespace AlgoritmoGenetico
                 Cromosoma padre, madre, hijo1, hijo2;
                 int ind1 = RouletteSelection();
                 int ind2 = RouletteSelection();
+
+                //int ind1 = Cromosoma.TheSeed.Next(numPuestosDeTrabajo * numTrabajadores);
+                //int ind2 = Cromosoma.TheSeed.Next(numPuestosDeTrabajo * numTrabajadores);
+
                 padre = ((Cromosoma)CromosomasPadre[ind1]);
                 madre = ((Cromosoma)CromosomasMadre[ind2]);
 
                 if (Cromosoma.TheSeed.NextDouble() < ratioCruce)
                 {
-                    padre.Cruzar(ref madre, out hijo1, out hijo2);
+                    padre.Cruzar_uniforme(ref madre, out hijo1, out hijo2);
                     if (!hijo1.esValido())
                     {
+                        cantidadMalos++;
                         padre.CopiarCromosoma(out hijo1);
                     }
                     if (!hijo2.esValido())
                     {
+                        cantidadMalos++;
                         madre.CopiarCromosoma(out hijo2);
                     }
                 }
@@ -157,10 +168,21 @@ namespace AlgoritmoGenetico
                 hijo1.Mutar();
                 hijo2.Mutar();
 
+                if (!hijo1.esValido())
+                {
+                    padre.CopiarCromosoma(out hijo1);
+                }
+                if (!hijo2.esValido())
+                {
+                    madre.CopiarCromosoma(out hijo2);
+                }
+
                 CromosomasResultantes.Add(hijo1);
                 CromosomasResultantes.Add(hijo2);
 
             }
+
+            Console.WriteLine("Cruces no validos: " + cantidadMalos);
 
         }
 
@@ -223,6 +245,13 @@ namespace AlgoritmoGenetico
                 fitness += ((Cromosoma)Cromosomas[i]).FitnessActual;
                 tablaFitness.Add((double)fitness);
             }
+        }
+
+        public Cromosoma obtenerMejorCromosoma()
+        {
+            Cromosoma valor = (Cromosoma)Cromosomas[PoblacionActual-1];
+            
+            return valor;
         }
     }
 }
