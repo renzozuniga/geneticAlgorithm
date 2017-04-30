@@ -114,7 +114,7 @@ namespace AlgoritmoGeneticoDP1
         }
 
         //Operador Genético de cruce de tipo uniforme
-        public void Cruzar_uniforme(ref Cromosoma cromosoma2, out Cromosoma hijo1, out Cromosoma hijo2)
+        public void Cruce_uniforme(ref Cromosoma cromosoma2, out Cromosoma hijo1, out Cromosoma hijo2)
         {
             hijo1 = new Cromosoma();
             hijo2 = new Cromosoma();
@@ -141,7 +141,7 @@ namespace AlgoritmoGeneticoDP1
         }
 
         //Operador Genético de cruce de tipo one-point
-        public void Cruzar_unpunto(ref Cromosoma cromosoma2, out Cromosoma hijo1, out Cromosoma hijo2)
+        public void Cruce_unpunto(ref Cromosoma cromosoma2, out Cromosoma hijo1, out Cromosoma hijo2)
         {
             int trabajador1 = TheSeed.Next(0, Poblacion.numTrabajadores);
             int trabajador2 = TheSeed.Next(0, Poblacion.numTrabajadores);

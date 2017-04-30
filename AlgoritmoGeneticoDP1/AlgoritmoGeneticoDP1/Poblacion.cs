@@ -12,20 +12,21 @@ namespace AlgoritmoGeneticoDP1
   
         private ArrayList Cromosomas = new ArrayList();
         private ArrayList CromosomasResultantes = new ArrayList();
+
         public static int duracionTurno;
         private int Generacion = 1;
-
-        private const float kDeathFitness = 0.0f;
         private const int kMax = 2;
         private const int kMin = 0;
-        private const float kMutationFrequency = 0.1f;
-        private const float kReproductionFitness = 0.0f;
         public static int numPuestosDeTrabajo;
         public static int numTrabajadores;
+
         private int PoblacionActual = poblacionInicial;
         private const int poblacionInicial = 1000;
         private const int poblacionLimite = 1000;
-        private double ratioCruce = 0.8;
+
+        private const double frecuenciaCruce = 0.8;
+        private const double frecuenciaMutacion = 0.1;
+
         private ArrayList tablaFitness = new ArrayList();
         private double totalFitness;
 
@@ -53,24 +54,17 @@ namespace AlgoritmoGeneticoDP1
             RankPopulation();
         }
 
-        //Esta función acciona el operador genético de cruce y de mutación
-        public void Cruce(ArrayList cromosomas)
+        private void repartirCromosomas(ArrayList CromosomasTotales, ArrayList CromosomasMadre, ArrayList CromosomasPadre)
         {
-            int cantidadMalos = 0;                         //Indica la cantidad de cruces malos entre cromosomas en la generacion
-            CromosomasResultantes.Clear();
-            ArrayList CromosomasMadre = new ArrayList();
-            ArrayList CromosomasPadre = new ArrayList();
-
-            //Se procede a repartir equitativamente los cromosomas para generar los cruces posterirores
-            for (int i = 0; i < cromosomas.Count; i++)
+            for (int i = 0; i < CromosomasTotales.Count; i++)
             {
                 if ((Cromosoma.TheSeed.Next(100) % 2) > 0)
                 {
-                    CromosomasMadre.Add(cromosomas[i]);
+                    CromosomasMadre.Add(CromosomasTotales[i]);
                 }
                 else
                 {
-                    CromosomasPadre.Add(cromosomas[i]);
+                    CromosomasPadre.Add(CromosomasTotales[i]);
                 }
             }
             if (CromosomasMadre.Count <= CromosomasPadre.Count)
@@ -97,6 +91,24 @@ namespace AlgoritmoGeneticoDP1
                     CromosomasPadre.RemoveAt(CromosomasPadre.Count - 1);
                 }
             }
+        }
+
+        //Esta función acciona el operador genético de cruce y de mutación
+        public void Cruce(ArrayList cromosomas)
+        {
+            //Indica la cantidad de cruces fallidos entre cromosomas en la generacion
+            int crucesFallidos = 0;
+            int crucesTotales = 0;
+            //Indica la cantidad de mutaciones fallidas entre cromosomas en la generacion
+            int mutacionesFallidas = 0;
+            int mutacionesTotales = 0;
+                             
+            CromosomasResultantes.Clear();
+            ArrayList CromosomasMadre = new ArrayList();
+            ArrayList CromosomasPadre = new ArrayList();
+
+            //Se procede a repartir equitativamente los cromosomas para generar los cruces posteriores
+            repartirCromosomas(cromosomas, CromosomasMadre, CromosomasPadre);
 
             //Se proceden a realizar los cruces entre padre y madre escogiendo estos por el método de la ruleta
             for (int j = 0; j < CromosomasPadre.Count; j++)
@@ -108,21 +120,22 @@ namespace AlgoritmoGeneticoDP1
                 Cromosoma padre = (Cromosoma)CromosomasPadre[ind1];
                 Cromosoma madre = (Cromosoma)CromosomasMadre[ind2];
 
-                //Dependiendo del ratioCruce, puede que se haga cruce o no
-                if (Cromosoma.TheSeed.NextDouble() < this.ratioCruce)
+                //Dependiendo de la frecuencia de cruce, puede que se haga cruce o no
+                if (Cromosoma.TheSeed.NextDouble() < frecuenciaCruce)
                 {
                     //Se procede a accionar el operador genético de cruce de tipo uniforme
-                    padre.Cruzar_uniforme(ref madre, out hijo1, out hijo2);
+                    padre.Cruce_uniforme(ref madre, out hijo1, out hijo2);
+                    crucesTotales+=2;
 
                     //Se verifica que los cromosomas después del cruce sigan siendo validos en estructura
                     if (!hijo1.esValido())
                     {
-                        cantidadMalos++;
+                        crucesFallidos++;
                         padre.CopiarCromosoma(out hijo1);
                     }
                     if (!hijo2.esValido())
                     {
-                        cantidadMalos++;
+                        crucesFallidos++;
                         madre.CopiarCromosoma(out hijo2);
                     }
                 }
@@ -132,24 +145,33 @@ namespace AlgoritmoGeneticoDP1
                     madre.CopiarCromosoma(out hijo2);
                 }
 
-                //Se procede a accionar el operador genético de mutación
-                hijo1.Mutar();
-                hijo2.Mutar();
-                //Se verifica que los cromosomas después de la mutación sigan siendo validos en estructura
-                if (!hijo1.esValido())
+                //Dependiendo de la frecuencia de mutación, puede que se mute o no
+                if (Cromosoma.TheSeed.NextDouble() < frecuenciaMutacion)
                 {
-                    padre.CopiarCromosoma(out hijo1);
-                }
-                if (!hijo2.esValido())
-                {
-                    madre.CopiarCromosoma(out hijo2);
+                    //Se procede a accionar el operador genético de mutación
+                    hijo1.Mutar();
+                    hijo2.Mutar();
+                    mutacionesTotales += 2;
+
+                    //Se verifica que los cromosomas después de la mutación sigan siendo validos en estructura
+                    if (!hijo1.esValido())
+                    {
+                        padre.CopiarCromosoma(out hijo1);
+                        mutacionesFallidas++;
+                    }
+                    if (!hijo2.esValido())
+                    {
+                        madre.CopiarCromosoma(out hijo2);
+                        mutacionesFallidas++;
+                    }
                 }
 
                 //Se agrupan los hijos para generar la siguiente generación
                 CromosomasResultantes.Add(hijo1);
                 CromosomasResultantes.Add(hijo2);
             }
-            Console.WriteLine("Cruces no validos: " + cantidadMalos);
+            Console.WriteLine("Cruces fallidos: " + crucesFallidos + "/" + crucesTotales);
+            Console.WriteLine("Mutaciones fallidas: " + mutacionesFallidas + "/" + mutacionesTotales);
         }
 
         public void ImprimirGeneracion()
