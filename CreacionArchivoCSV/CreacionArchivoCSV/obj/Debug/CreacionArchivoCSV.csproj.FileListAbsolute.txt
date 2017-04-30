@@ -1,0 +1,9 @@
+c:\users\renzo\documents\visual studio 2015\Projects\CreacionArchivoCSV\CreacionArchivoCSV\bin\Debug\CreacionArchivoCSV.exe.config
+c:\users\renzo\documents\visual studio 2015\Projects\CreacionArchivoCSV\CreacionArchivoCSV\obj\Debug\CreacionArchivoCSV.csprojResolveAssemblyReference.cache
+c:\users\renzo\documents\visual studio 2015\Projects\CreacionArchivoCSV\CreacionArchivoCSV\bin\Debug\CreacionArchivoCSV.exe
+c:\users\renzo\documents\visual studio 2015\Projects\CreacionArchivoCSV\CreacionArchivoCSV\bin\Debug\CreacionArchivoCSV.pdb
+c:\users\renzo\documents\visual studio 2015\Projects\CreacionArchivoCSV\CreacionArchivoCSV\obj\Debug\CreacionArchivoCSV.exe
+c:\users\renzo\documents\visual studio 2015\Projects\CreacionArchivoCSV\CreacionArchivoCSV\obj\Debug\CreacionArchivoCSV.pdb
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\CreacionArchivoCSV\CreacionArchivoCSV\bin\Debug\CreacionArchivoCSV.exe.config
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\CreacionArchivoCSV\CreacionArchivoCSV\obj\Debug\CreacionArchivoCSV.exe
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\CreacionArchivoCSV\CreacionArchivoCSV\obj\Debug\CreacionArchivoCSV.pdb

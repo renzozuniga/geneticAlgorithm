@@ -1,0 +1,9 @@
+c:\users\renzo\documents\visual studio 2015\Projects\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.exe.config
+c:\users\renzo\documents\visual studio 2015\Projects\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.exe
+c:\users\renzo\documents\visual studio 2015\Projects\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.pdb
+c:\users\renzo\documents\visual studio 2015\Projects\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.csprojResolveAssemblyReference.cache
+c:\users\renzo\documents\visual studio 2015\Projects\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.exe
+c:\users\renzo\documents\visual studio 2015\Projects\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.pdb
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.exe.config
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.exe
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.pdb
