@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text; 
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AlgoritmoGeneticoDP1
@@ -241,9 +242,9 @@ namespace AlgoritmoGeneticoDP1
             }
         }
 
-        public void mostrarCromosoma()
+        public void mostrarCromosoma(StreamWriter file)
         {
-            Console.WriteLine(ToString());
+            file.WriteLine(ToString());
         }
 
         //Operador genético de mutación en una posicion (cambia a un trabajador de un puesto de trabajo)

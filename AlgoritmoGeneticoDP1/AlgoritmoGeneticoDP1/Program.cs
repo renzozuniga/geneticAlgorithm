@@ -92,24 +92,26 @@ namespace AlgoritmoGeneticoDP1
 
             //Se procede a leer la data inicial desde un archivo .csv
             leerDataEntrada(trabajadores, procesos, ref duracionTurno);
+            StreamWriter reporte = new StreamWriter("reporte.txt");
 
-            //Se genera la población inicial 
+            //Se genera la población inicial
+            int generacion = 1; //Indica el numero de la generacion
             Poblacion poblacion = new Poblacion(trabajadores, procesos, duracionTurno);
 
             //Se obtiene el mejor cromosoma de la poblacion inicial
             Cromosoma mejorCromosoma = poblacion.obtenerMejorCromosoma();
             Cromosoma ultimoCromosoma = new Cromosoma();
 
-            int generacion = 1;                 //Indica el numero de la generacion
-            int repetido = 0;                   //Indica la cantidad de veces que el fitness del mejor cromosoma no cambia
-            int i = 0;
+            reporte.WriteLine("Población inicial");
+            reporte.WriteLine("Mejor cromosoma");
+            mejorCromosoma.mostrarCromosoma(reporte);
 
-            Console.WriteLine("Generación " + generacion);
-            mejorCromosoma.mostrarCromosoma();
-
+            int repetido = 0, i = 0;
             // Condicion de parada del algoritmo genetico
             while ((i < MAX_ITERACIONES) && (repetido < MAX_REPETIDOS))
             {
+                reporte.WriteLine();
+                reporte.WriteLine("Generación " + generacion);
                 // Generar la siguiente generacion 
                 poblacion.SiguienteGeneracion();
 
@@ -132,17 +134,26 @@ namespace AlgoritmoGeneticoDP1
                     //Si el mejor cromosoma de la generacion actual no es igual al mejor cromosoma de la generacion anterior
                     repetido = 0;
                 }
-                i++;
                 generacion++;
+                i++;
 
-                //Se guarda el mejor cromosoma actual para tenerlo en cuenta en la siguiente generacion
-                ultimoCromosoma = nuevoCromosoma;  
-                nuevoCromosoma.mostrarCromosoma();
-                Console.WriteLine("Generación " + generacion);
+                // Se guarda el mejor cromosoma actual para tenerlo en cuenta en la siguiente generacion
+                ultimoCromosoma = nuevoCromosoma;
+                reporte.WriteLine("Mejor cromosoma:");
+                nuevoCromosoma.mostrarCromosoma(reporte);
             }
-            mejorCromosoma.mostrarCromosoma();
-            mejorCromosoma.mostrarAsignaciones();   //Se muestran las asignaciones correspondientes
-            Console.WriteLine(mejorCromosoma.esValido());
+
+            reporte.WriteLine();
+            reporte.WriteLine("RESULTADOS");
+            reporte.WriteLine("Mejor cromosoma global");
+            mejorCromosoma.mostrarCromosoma(reporte);
+            reporte.Close();
+
+            // Se muestran las asignaciones correspondientes
+            Console.WriteLine("Asignaciones");
+            mejorCromosoma.mostrarAsignaciones();
+            // mejorCromosoma.exportarCSV();
+            Console.WriteLine("Presione ENTER para continuar");
             Console.ReadLine();
         }
 
