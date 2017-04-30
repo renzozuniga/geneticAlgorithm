@@ -15,10 +15,6 @@ namespace AlgoritmoGeneticoDP1
         {
             int numPuestosdeTrabajo = 0;    //Indica el numero de puestos de trabajo
             int numTrabajadores = 0;        //Indica el numero de trabajadores en un dia de trabajo
-            ArrayList indicesRotura = new ArrayList();   //Indica los indices de rotura de cada trabajador en cada puesto de trabajo
-            ArrayList indicesTiempo = new ArrayList();  //Indica los indices de tiempo de cada trabajador en cada puesto de trabajo
-            ArrayList vacantes = new ArrayList();       //Indica las vacantes maximas de trabajadores en cada puesto de trabajo
-
             StreamReader file = new StreamReader("data_input.csv");
 
             //Leer cabeceras principales
@@ -36,17 +32,23 @@ namespace AlgoritmoGeneticoDP1
 
             file.ReadLine();
 
+            // Creando los trabajadores
+            for (int i = 0; i < numTrabajadores; i++)
+            {
+                Trabajador trabajador = new Trabajador(i + 1);
+                trabajadores.Add(trabajador);
+            }
+
             //Lectura de cabecera indices de rotura
             string cabeceraIndices = file.ReadLine();
-
             //Lectura indices de rotura de cada trabajador
-            for (int j = 0; j < numTrabajadores; j++)
+            for (int i = 0; i < numTrabajadores; i++)
             {
-
                 line = file.ReadLine().Split(',');
-                for (int m = 0; m < numPuestosdeTrabajo; m++)
+                for (int j = 0; j < numPuestosdeTrabajo; j++)
                 {
-                    indicesRotura.Add(Convert.ToDouble(line[m + 1]));
+                    double rotura = Convert.ToDouble(line[j + 1]);
+                    ((Trabajador)trabajadores[i]).indicesRotura.Add(rotura);
                 }
             }
 
@@ -54,15 +56,14 @@ namespace AlgoritmoGeneticoDP1
 
             //Lectura de cabecera indices de tiempo
             cabeceraIndices = file.ReadLine();
-
             //Lectura indices de tiempo de cada trabajador
-            for (int k = 0; k < numTrabajadores; k++)
+            for (int i = 0; i < numTrabajadores; i++)
             {
-
                 line = file.ReadLine().Split(',');
-                for (int n = 0; n < numPuestosdeTrabajo; n++)
+                for (int j = 0; j < numPuestosdeTrabajo; j++)
                 {
-                    indicesTiempo.Add(Convert.ToInt32(line[n + 1]));
+                    int tiempo = Convert.ToInt32(line[j + 1]);
+                    ((Trabajador)trabajadores[i]).indicesTiempo.Add(tiempo);
                 }
             }
 
@@ -72,34 +73,13 @@ namespace AlgoritmoGeneticoDP1
             line = file.ReadLine().Split(',');
             for (int i = 0; i < numPuestosdeTrabajo; i++)
             {
-                vacantes.Add(Convert.ToInt32(line[i + 1]));
-            }
-             
-            file.Close();
-
-           
-            for(int i = 0; i < numTrabajadores; i++)
-            {
-                ArrayList indicesRoturaTrab = new ArrayList();
-                ArrayList indicesTiempoTrab = new ArrayList();
-                for (int j = 0; j < numPuestosdeTrabajo; j++)
-                {
-                    indicesRoturaTrab.Add(indicesRotura[i*numPuestosdeTrabajo + j]);
-                    indicesTiempoTrab.Add(indicesTiempo[i * numPuestosdeTrabajo + j]);
-                }
-                Trabajador trabajador = new Trabajador(i + 1, indicesRoturaTrab, indicesTiempoTrab);
-                trabajadores.Add(trabajador);
-                
-            }
-
-            
-            for(int i = 0; i < numPuestosdeTrabajo; i++)
-            {
-                Proceso proceso = new Proceso(i + 1, (int)vacantes[i]);
+                //Indica las vacantes maximas de trabajadores en cada puesto de trabajo
+                int vacantes = Convert.ToInt32(line[i + 1]);
+                Proceso proceso = new Proceso(i + 1, vacantes);
                 procesos.Add(proceso);
-                
+
             }
-            
+            file.Close();
         }
 
         [STAThread]

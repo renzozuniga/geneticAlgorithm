@@ -14,8 +14,12 @@ namespace AlgoritmoGeneticoDP1
         private ArrayList CromosomasResultantes = new ArrayList();
         public static int duracionTurno;
         private int Generacion = 1;
+
+
         public static ArrayList indiceRotura = new ArrayList();
         public static ArrayList indiceTiempo = new ArrayList();
+
+
         private const float kDeathFitness = 0.0f;
         private const int kMax = 2;
         private const int kMin = 0;
@@ -29,7 +33,11 @@ namespace AlgoritmoGeneticoDP1
         private double ratioCruce = 0.8;
         private ArrayList tablaFitness = new ArrayList();
         private double totalFitness;
+
+
         public static ArrayList vacantes = new ArrayList();
+
+
         public static ArrayList trabajadores = new ArrayList();
         public static ArrayList procesos = new ArrayList();
 

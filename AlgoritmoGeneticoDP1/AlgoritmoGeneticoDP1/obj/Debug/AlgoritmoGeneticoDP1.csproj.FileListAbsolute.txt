@@ -10,3 +10,9 @@ C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGenet
 C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.exe
 C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.pdb
 C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.csprojResolveAssemblyReference.cache
+D:\Documents\dp1\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.exe.config
+D:\Documents\dp1\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.exe
+D:\Documents\dp1\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.exe
+D:\Documents\dp1\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.pdb
+D:\Documents\dp1\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.csprojResolveAssemblyReference.cache
+D:\Documents\dp1\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.pdb
