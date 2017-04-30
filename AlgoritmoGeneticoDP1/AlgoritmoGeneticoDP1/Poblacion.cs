@@ -30,16 +30,31 @@ namespace AlgoritmoGeneticoDP1
         private ArrayList tablaFitness = new ArrayList();
         private double totalFitness;
         public static ArrayList vacantes = new ArrayList();
+        public static ArrayList trabajadores = new ArrayList();
+        public static ArrayList procesos = new ArrayList();
 
         //Este constructor, genera la población inicial
-        public Poblacion(int nwr, int nwp, int td, ArrayList mTP, ArrayList ei, ArrayList ti)
+        public Poblacion(ArrayList trab, ArrayList proc, int td)
         {
-            numTrabajadores = nwr;
-            numPuestosDeTrabajo = nwp;
+            //Se inicializan las variables principales de Población
+            numTrabajadores = trab.Count;
+            numPuestosDeTrabajo = proc.Count;
             duracionTurno = td;
-            vacantes = (ArrayList)mTP.Clone();
-            indiceRotura = (ArrayList)ei.Clone();
-            indiceTiempo = (ArrayList)ti.Clone();
+            for(int i = 0; i < proc.Count; i++)
+            {
+                procesos.Add(((Proceso)proc[i]));
+                vacantes.Add(((Proceso)proc[i]).vacantes);
+            }
+            for(int i = 0; i < trab.Count; i++)
+            {
+                trabajadores.Add(((Trabajador)trab[i]));
+                for (int j = 0; j < proc.Count; j++)
+                {
+                    indiceRotura.Add(((Trabajador)trab[i]).indicesRotura[j]);
+                    indiceTiempo.Add(((Trabajador)trab[i]).indicesTiempo[j]);
+                }
+                
+            }
             for (int i = 0; i < poblacionInicial; i++)
             {
                 //Aquí se generan los cromosomas de la poblacion inicial

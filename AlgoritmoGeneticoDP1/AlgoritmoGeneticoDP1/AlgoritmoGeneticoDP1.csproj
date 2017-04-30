@@ -46,8 +46,10 @@
     <Compile Include="ComparadorCromosoma.cs" />
     <Compile Include="Cromosoma.cs" />
     <Compile Include="Poblacion.cs" />
+    <Compile Include="Proceso.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Trabajador.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

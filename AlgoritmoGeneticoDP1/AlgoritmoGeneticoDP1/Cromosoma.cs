@@ -219,12 +219,12 @@ namespace AlgoritmoGeneticoDP1
             Console.WriteLine("Cantidad de vacantes por puesto: ");
             for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
             {
-                Console.Write("Puesto " + (i + 1) + ": ");
+                Console.Write("Puesto " + ((Proceso)(Poblacion.procesos[i])).id + ": ");
                 Console.WriteLine(Poblacion.vacantes[i]);
             }
             for (int j = 0; j < Poblacion.numTrabajadores; j++)
             {
-                Console.Write("Trabajador " + (j + 1) + ": ");
+                Console.Write("Trabajador " + ((Trabajador)(Poblacion.trabajadores[j])).id + ": ");
                 int suma = 0;
                 for (int k = 0; k < Poblacion.numPuestosDeTrabajo; k++)
                 {
@@ -232,7 +232,7 @@ namespace AlgoritmoGeneticoDP1
                     suma += (int)TheArray[indice];
                     if (((int)TheArray[indice]) == 1)
                     {
-                        Console.WriteLine("Asignado a Puesto " + (k + 1));
+                        Console.WriteLine("Asignado a Puesto " + ((Proceso)(Poblacion.procesos[k])).id);
                     }
                 }
                 if (suma == 0)

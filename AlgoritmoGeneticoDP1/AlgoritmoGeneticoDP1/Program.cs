@@ -11,8 +11,14 @@ namespace AlgoritmoGeneticoDP1
     class Program
     {
 
-        public static void leerDataEntrada(ref int numPuestosdeTrabajo, ref int numTrabajadores, ref int duracionTurno, ArrayList indicesError, ArrayList indicesTiempo, ArrayList vacantes)
+        public static void leerDataEntrada(ArrayList trabajadores, ArrayList procesos, ref int duracionTurno)
         {
+            int numPuestosdeTrabajo = 0;    //Indica el numero de puestos de trabajo
+            int numTrabajadores = 0;        //Indica el numero de trabajadores en un dia de trabajo
+            ArrayList indicesRotura = new ArrayList();   //Indica los indices de rotura de cada trabajador en cada puesto de trabajo
+            ArrayList indicesTiempo = new ArrayList();  //Indica los indices de tiempo de cada trabajador en cada puesto de trabajo
+            ArrayList vacantes = new ArrayList();       //Indica las vacantes maximas de trabajadores en cada puesto de trabajo
+
             StreamReader file = new StreamReader("data_input.csv");
 
             //Leer cabeceras principales
@@ -30,17 +36,17 @@ namespace AlgoritmoGeneticoDP1
 
             file.ReadLine();
 
-            //Lectura de cabecera indices de error
+            //Lectura de cabecera indices de rotura
             string cabeceraIndices = file.ReadLine();
 
-            //Lectura indices de error de cada trabajador
+            //Lectura indices de rotura de cada trabajador
             for (int j = 0; j < numTrabajadores; j++)
             {
 
                 line = file.ReadLine().Split(',');
                 for (int m = 0; m < numPuestosdeTrabajo; m++)
                 {
-                    indicesError.Add(Convert.ToDouble(line[m + 1]));
+                    indicesRotura.Add(Convert.ToDouble(line[m + 1]));
                 }
             }
 
@@ -70,23 +76,43 @@ namespace AlgoritmoGeneticoDP1
             }
              
             file.Close();
+
+           
+            for(int i = 0; i < numTrabajadores; i++)
+            {
+                ArrayList indicesRoturaTrab = new ArrayList();
+                ArrayList indicesTiempoTrab = new ArrayList();
+                for (int j = 0; j < numPuestosdeTrabajo; j++)
+                {
+                    indicesRoturaTrab.Add(indicesRotura[i*numPuestosdeTrabajo + j]);
+                    indicesTiempoTrab.Add(indicesTiempo[i * numPuestosdeTrabajo + j]);
+                }
+                Trabajador trabajador = new Trabajador(i + 1, indicesRoturaTrab, indicesTiempoTrab);
+                trabajadores.Add(trabajador);
+                
+            }
+
+            
+            for(int i = 0; i < numPuestosdeTrabajo; i++)
+            {
+                Proceso proceso = new Proceso(i + 1, (int)vacantes[i]);
+                procesos.Add(proceso);
+                
+            }
+            
         }
 
         [STAThread]
         private static void Main(string[] args)
         {
-            int numPuestosdeTrabajo = 0;    //Indica el numero de puestos de trabajo
             int duracionTurno = 0;        //Indica la duracion total de un dia de trabajo en minutos
-            int numTrabajadores = 0;        //Indica el numero de trabajadores en un dia de trabajo
-            ArrayList indicesRotura = new ArrayList();   //Indica los indices de rotura de cada trabajador en cada puesto de trabajo
-            ArrayList indicesTiempo = new ArrayList();  //Indica los indices de tiempo de cada trabajador en cada puesto de trabajo
-            ArrayList vacantes = new ArrayList();       //Indica las vacantes maximas de trabajadores en cada puesto de trabajo
+            ArrayList trabajadores = new ArrayList();   //Indica los indices de rotura de cada trabajador en cada puesto de trabajo
+            ArrayList procesos = new ArrayList();  //Indica los indices de tiempo de cada trabajador en cada puesto de trabajo
 
             //Se procede a leer la data inicial desde un archivo .csv
-            leerDataEntrada(ref numPuestosdeTrabajo, ref numTrabajadores, ref duracionTurno, indicesRotura, indicesTiempo, vacantes);
-
+            leerDataEntrada(trabajadores, procesos, ref duracionTurno);
             //Se genera la población inicial 
-            Poblacion poblacion = new Poblacion(numTrabajadores, numPuestosdeTrabajo, duracionTurno, vacantes, indicesRotura, indicesTiempo);
+            Poblacion poblacion = new Poblacion(trabajadores, procesos, duracionTurno);
 
             Cromosoma mejorCromosoma = poblacion.obtenerMejorCromosoma();   //Se obtiene el mejor cromosoma de la poblacion inicial
             Cromosoma ultimoCromosoma = new Cromosoma();
