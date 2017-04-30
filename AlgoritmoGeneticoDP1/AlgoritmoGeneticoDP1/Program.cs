@@ -10,6 +10,8 @@ namespace AlgoritmoGeneticoDP1
 {
     class Program
     {
+        private const int MAX_ITERACIONES = 1000;
+        private const int MAX_REPETIDOS = 25;
 
         public static void leerDataEntrada(ArrayList trabajadores, ArrayList procesos, ref int duracionTurno)
         {
@@ -90,10 +92,12 @@ namespace AlgoritmoGeneticoDP1
 
             //Se procede a leer la data inicial desde un archivo .csv
             leerDataEntrada(trabajadores, procesos, ref duracionTurno);
+
             //Se genera la población inicial 
             Poblacion poblacion = new Poblacion(trabajadores, procesos, duracionTurno);
 
-            Cromosoma mejorCromosoma = poblacion.obtenerMejorCromosoma();   //Se obtiene el mejor cromosoma de la poblacion inicial
+            //Se obtiene el mejor cromosoma de la poblacion inicial
+            Cromosoma mejorCromosoma = poblacion.obtenerMejorCromosoma();
             Cromosoma ultimoCromosoma = new Cromosoma();
 
             int generacion = 1;                 //Indica el numero de la generacion
@@ -103,10 +107,11 @@ namespace AlgoritmoGeneticoDP1
             Console.WriteLine("Generación " + generacion);
             mejorCromosoma.mostrarCromosoma();
 
-            while ((i < 1000) && (repetido < 5))        //Condicion de parada del algoritmo genetico, ya sea 1000 generaciones o 
-            {                                           //que el mejor cromosoma sea el mismo por 5 generaciones seguidas
-
-                poblacion.SiguienteGeneracion();        //Se procede a generar la siguiente generacion 
+            // Condicion de parada del algoritmo genetico
+            while ((i < MAX_ITERACIONES) && (repetido < MAX_REPETIDOS))
+            {
+                // Generar la siguiente generacion 
+                poblacion.SiguienteGeneracion();
 
                 //Se obtiene el mejor cromosoma de la actual generacion
                 Cromosoma nuevoCromosoma = poblacion.obtenerMejorCromosoma();   

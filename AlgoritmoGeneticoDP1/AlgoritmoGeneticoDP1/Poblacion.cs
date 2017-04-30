@@ -25,7 +25,7 @@ namespace AlgoritmoGeneticoDP1
         private const int poblacionLimite = 1000;
 
         private const double frecuenciaCruce = 0.8;
-        private const double frecuenciaMutacion = 0.1;
+        private const double frecuenciaMutacion = 0.2;
 
         private ArrayList tablaFitness = new ArrayList();
         private double totalFitness;
@@ -149,8 +149,8 @@ namespace AlgoritmoGeneticoDP1
                 if (Cromosoma.TheSeed.NextDouble() < frecuenciaMutacion)
                 {
                     //Se procede a accionar el operador genético de mutación
-                    hijo1.Mutar();
-                    hijo2.Mutar();
+                    hijo1.Mutar_intercambio();
+                    hijo2.Mutar_intercambio();
                     mutacionesTotales += 2;
 
                     //Se verifica que los cromosomas después de la mutación sigan siendo validos en estructura

@@ -10,7 +10,7 @@ namespace AlgoritmoGeneticoDP1
     class Cromosoma
     {
         public float FitnessActual;
-        public long Length;
+        public int Length;
         public ArrayList TheArray;
         private int TheMax;
         private int TheMin;
@@ -25,7 +25,7 @@ namespace AlgoritmoGeneticoDP1
         }
 
         //Genera un cromosoma de la población, teniendo en cuenta ciertas restricciones
-        public Cromosoma(long length, object min, object max)
+        public Cromosoma(int length, object min, object max)
         {
             FitnessActual = 0.0f;
             TheArray = new ArrayList();
@@ -246,8 +246,8 @@ namespace AlgoritmoGeneticoDP1
             Console.WriteLine(ToString());
         }
 
-        //Operador genético de mutación 
-        public void Mutar()
+        //Operador genético de mutación en una posicion (cambia a un trabajador de un puesto de trabajo)
+        public void Mutar_posicion()
         {
             //Indica el indice de un trabajador elegido aleatoriamente
             int indiceTrabajador = TheSeed.Next(Poblacion.numTrabajadores); 
@@ -272,6 +272,23 @@ namespace AlgoritmoGeneticoDP1
                 }
             }
             TheArray[indiceMutacion] = 1;
+        }
+
+        //Operador genético de mutación por intercambio (cambia a varios trabajadores de puesto de trabajo)
+        public void Mutar_intercambio()
+        {
+            int trabajador1 = TheSeed.Next(Poblacion.numTrabajadores);
+            int trabajador2 = TheSeed.Next(Poblacion.numTrabajadores);
+
+            for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
+            {
+                int indice1 = trabajador1 * Poblacion.numPuestosDeTrabajo + i;
+                int indice2 = trabajador2 * Poblacion.numPuestosDeTrabajo + i;
+
+                int aux = (int)TheArray[indice1];
+                TheArray[indice1] = TheArray[indice2];
+                TheArray[indice2] = aux;
+            }
         }
 
         public override string ToString()
