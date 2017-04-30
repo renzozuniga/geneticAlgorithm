@@ -7,3 +7,6 @@ c:\users\renzo\documents\visual studio 2015\Projects\AlgoritmoGeneticoDP1\Algori
 C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.exe.config
 C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.exe
 C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.pdb
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.exe
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\bin\Debug\AlgoritmoGeneticoDP1.pdb
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\AlgoritmoGeneticoDP1\AlgoritmoGeneticoDP1\obj\Debug\AlgoritmoGeneticoDP1.csprojResolveAssemblyReference.cache

@@ -12,7 +12,8 @@ namespace AlgoritmoGeneticoDP1
         public ComparadorCromosoma()
         {
         }
-        // Methods
+        
+        //Indica cual de los dos objetos es mayor
         public int Compare(object x, object y)
         {
             if (!(x is Cromosoma) || !(y is Cromosoma))

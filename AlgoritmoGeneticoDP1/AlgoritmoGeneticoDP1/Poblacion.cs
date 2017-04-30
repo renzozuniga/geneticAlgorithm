@@ -9,204 +9,231 @@ namespace AlgoritmoGeneticoDP1
 {
     class Poblacion
     {
-        // Fields
+  
         private ArrayList Cromosomas = new ArrayList();
         private ArrayList CromosomasResultantes = new ArrayList();
         public static int duracionTurno;
         private int Generacion = 1;
-        public static ArrayList indiceError = new ArrayList();
+        public static ArrayList indiceRotura = new ArrayList();
         public static ArrayList indiceTiempo = new ArrayList();
-        private const float kDeathFitness = 0f;
+        private const float kDeathFitness = 0.0f;
         private const int kMax = 2;
         private const int kMin = 0;
         private const float kMutationFrequency = 0.1f;
-        private const float kReproductionFitness = 0f;
+        private const float kReproductionFitness = 0.0f;
         public static int numPuestosDeTrabajo;
         public static int numTrabajadores;
-        private int PoblacionActual = 0x3e8;
-        private const int poblacionInicial = 0x3e8;
-        private const int poblacionLimite = 0x3e8;
+        private int PoblacionActual = poblacionInicial;
+        private const int poblacionInicial = 1000;
+        private const int poblacionLimite = 1000;
         private double ratioCruce = 0.8;
         private ArrayList tablaFitness = new ArrayList();
         private double totalFitness;
         public static ArrayList vacantes = new ArrayList();
 
-        // Methods
+        //Este constructor, genera la población inicial
         public Poblacion(int nwr, int nwp, int td, ArrayList mTP, ArrayList ei, ArrayList ti)
         {
             numTrabajadores = nwr;
             numPuestosDeTrabajo = nwp;
             duracionTurno = td;
             vacantes = (ArrayList)mTP.Clone();
-            indiceError = (ArrayList)ei.Clone();
+            indiceRotura = (ArrayList)ei.Clone();
             indiceTiempo = (ArrayList)ti.Clone();
-            for (int i = 0; i < 0x3e8; i++)
+            for (int i = 0; i < poblacionInicial; i++)
             {
-                Cromosoma cromosoma = new Cromosoma((long)(numPuestosDeTrabajo * numTrabajadores), 0, 2);
+                //Aquí se generan los cromosomas de la poblacion inicial
+                Cromosoma cromosoma = new Cromosoma(numPuestosDeTrabajo * numTrabajadores, 0, 2);
                 cromosoma.CalcularFitness();
-                this.Cromosomas.Add(cromosoma);
+                Cromosomas.Add(cromosoma);
             }
-            this.RankPopulation();
+            //Se proceden a ordenar los cromosomas de menor a mayor fitness
+            RankPopulation();
         }
 
+        //Esta función acciona el operador genético de cruce y de mutación
         public void Cruce(ArrayList cromosomas)
         {
-            int num = 0;
-            this.CromosomasResultantes.Clear();
-            ArrayList list = new ArrayList();
-            ArrayList list2 = new ArrayList();
+            int cantidadMalos = 0;                         //Indica la cantidad de cruces malos entre cromosomas en la generacion
+            CromosomasResultantes.Clear();
+            ArrayList CromosomasMadre = new ArrayList();
+            ArrayList CromosomasPadre = new ArrayList();
+
+            //Se procede a repartir equitativamente los cromosomas para generar los cruces posterirores
             for (int i = 0; i < cromosomas.Count; i++)
             {
                 if ((Cromosoma.TheSeed.Next(100) % 2) > 0)
                 {
-                    list.Add(cromosomas[i]);
+                    CromosomasMadre.Add(cromosomas[i]);
                 }
                 else
                 {
-                    list2.Add(cromosomas[i]);
+                    CromosomasPadre.Add(cromosomas[i]);
                 }
             }
-            if (list.Count <= list2.Count)
+            if (CromosomasMadre.Count <= CromosomasPadre.Count)
             {
-                while (list2.Count > list.Count)
+                while (CromosomasPadre.Count > CromosomasMadre.Count)
                 {
-                    list.Add(list2[list2.Count - 1]);
-                    list2.RemoveAt(list2.Count - 1);
+                    CromosomasMadre.Add(CromosomasPadre[CromosomasPadre.Count - 1]);
+                    CromosomasPadre.RemoveAt(CromosomasPadre.Count - 1);
                 }
-                if (list.Count > list2.Count)
+                if (CromosomasMadre.Count > CromosomasPadre.Count)
                 {
-                    list.RemoveAt(list.Count - 1);
+                    CromosomasMadre.RemoveAt(CromosomasMadre.Count - 1);
                 }
             }
             else
             {
-                while (list.Count > list2.Count)
+                while (CromosomasMadre.Count > CromosomasPadre.Count)
                 {
-                    list2.Add(list[list.Count - 1]);
-                    list.RemoveAt(list.Count - 1);
+                    CromosomasPadre.Add(CromosomasMadre[CromosomasMadre.Count - 1]);
+                    CromosomasMadre.RemoveAt(CromosomasMadre.Count - 1);
                 }
-                if (list2.Count > list.Count)
+                if (CromosomasPadre.Count > CromosomasMadre.Count)
                 {
-                    list2.RemoveAt(list2.Count - 1);
+                    CromosomasPadre.RemoveAt(CromosomasPadre.Count - 1);
                 }
             }
-            for (int j = 0; j < list2.Count; j++)
+
+            //Se proceden a realizar los cruces entre padre y madre escogiendo estos por el método de la ruleta
+            for (int j = 0; j < CromosomasPadre.Count; j++)
             {
-                Cromosoma cromosoma3;
-                Cromosoma cromosoma4;
-                int num4 = this.RouletteSelection();
-                int num5 = this.RouletteSelection();
-                Cromosoma cromosoma = (Cromosoma)list2[num4];
-                Cromosoma cromosoma2 = (Cromosoma)list[num5];
+                Cromosoma hijo1;
+                Cromosoma hijo2;
+                int ind1 = RouletteSelection();   //Indica el indice del cromosoma padre
+                int ind2 = RouletteSelection();   //Indica el indice del cromosoma madre
+                Cromosoma padre = (Cromosoma)CromosomasPadre[ind1];
+                Cromosoma madre = (Cromosoma)CromosomasMadre[ind2];
+
+                //Dependiendo del ratioCruce, puede que se haga cruce o no
                 if (Cromosoma.TheSeed.NextDouble() < this.ratioCruce)
                 {
-                    cromosoma.Cruzar_uniforme(ref cromosoma2, out cromosoma3, out cromosoma4);
-                    if (!cromosoma3.esValido())
+                    //Se procede a accionar el operador genético de cruce de tipo uniforme
+                    padre.Cruzar_uniforme(ref madre, out hijo1, out hijo2);
+
+                    //Se verifica que los cromosomas después del cruce sigan siendo validos en estructura
+                    if (!hijo1.esValido())
                     {
-                        num++;
-                        cromosoma.CopiarCromosoma(out cromosoma3);
+                        cantidadMalos++;
+                        padre.CopiarCromosoma(out hijo1);
                     }
-                    if (!cromosoma4.esValido())
+                    if (!hijo2.esValido())
                     {
-                        num++;
-                        cromosoma2.CopiarCromosoma(out cromosoma4);
+                        cantidadMalos++;
+                        madre.CopiarCromosoma(out hijo2);
                     }
                 }
                 else
                 {
-                    cromosoma.CopiarCromosoma(out cromosoma3);
-                    cromosoma2.CopiarCromosoma(out cromosoma4);
+                    padre.CopiarCromosoma(out hijo1);
+                    madre.CopiarCromosoma(out hijo2);
                 }
-                cromosoma3.Mutar();
-                cromosoma4.Mutar();
-                if (!cromosoma3.esValido())
+
+                //Se procede a accionar el operador genético de mutación
+                hijo1.Mutar();
+                hijo2.Mutar();
+                //Se verifica que los cromosomas después de la mutación sigan siendo validos en estructura
+                if (!hijo1.esValido())
                 {
-                    cromosoma.CopiarCromosoma(out cromosoma3);
+                    padre.CopiarCromosoma(out hijo1);
                 }
-                if (!cromosoma4.esValido())
+                if (!hijo2.esValido())
                 {
-                    cromosoma2.CopiarCromosoma(out cromosoma4);
+                    madre.CopiarCromosoma(out hijo2);
                 }
-                this.CromosomasResultantes.Add(cromosoma3);
-                this.CromosomasResultantes.Add(cromosoma4);
+
+                //Se agrupan los hijos para generar la siguiente generación
+                CromosomasResultantes.Add(hijo1);
+                CromosomasResultantes.Add(hijo2);
             }
-            Console.WriteLine("Cruces no validos: " + num);
+            Console.WriteLine("Cruces no validos: " + cantidadMalos);
         }
 
         public void ImprimirGeneracion()
         {
-            Console.WriteLine("Generacion {0}\n", this.Generacion);
-            for (int i = 0; i < this.PoblacionActual; i++)
+            Console.WriteLine("Generacion {0}\n", Generacion);
+            for (int i = 0; i < PoblacionActual; i++)
             {
-                Console.WriteLine(((Cromosoma)this.Cromosomas[i]).ToString());
+                Console.WriteLine(((Cromosoma)Cromosomas[i]).ToString());
             }
             Console.WriteLine("Presione Enter para continuar...\n");
             Console.ReadLine();
         }
 
-        public Cromosoma obtenerMejorCromosoma() =>
-            ((Cromosoma)this.Cromosomas[this.PoblacionActual - 1]);
+        //Devuelve el mejor cromosoma de la generación actual
+        public Cromosoma obtenerMejorCromosoma()
+        {
+            Cromosoma valor = (Cromosoma)Cromosomas[PoblacionActual - 1];
+            return valor;
+        }
 
+        //Ordena los cromosomas de la generación actual y actualiza el fitness total de dicha generación
         private void RankPopulation()
         {
-            this.totalFitness = 0.0;
-            for (int i = 0; i < this.PoblacionActual; i++)
+            totalFitness = 0.0;
+            for (int i = 0; i < PoblacionActual; i++)
             {
-                Cromosoma cromosoma = (Cromosoma)this.Cromosomas[i];
-                this.totalFitness += cromosoma.FitnessActual;
+                Cromosoma cromosoma = (Cromosoma)Cromosomas[i];
+                totalFitness += cromosoma.FitnessActual;
             }
-            this.Cromosomas.Sort(new ComparadorCromosoma());
-            double num = 0.0;
-            this.tablaFitness.Clear();
-            for (int j = 0; j < this.PoblacionActual; j++)
+            Cromosomas.Sort(new ComparadorCromosoma());
+            double fitness = 0.0;
+            tablaFitness.Clear();
+            for (int j = 0; j < PoblacionActual; j++)
             {
-                num += ((Cromosoma)this.Cromosomas[j]).FitnessActual;
-                this.tablaFitness.Add(num);
+                fitness += ((Cromosoma)Cromosomas[j]).FitnessActual;
+                tablaFitness.Add(fitness);
             }
         }
 
+        //Devuelve el indice del cromosoma seleccionado usando el método de la ruleta
         private int RouletteSelection()
         {
-            double num = Cromosoma.TheSeed.NextDouble() * this.totalFitness;
-            int num2 = -1;
-            int num4 = 0;
-            int num5 = (this.PoblacionActual / 2) - 1;
-            int num3 = (num5 - num4) / 2;
-            while ((num2 == -1) && (num4 <= num5))
+            double randomFitness = Cromosoma.TheSeed.NextDouble() * totalFitness;
+            int ind = -1;
+            int medio = 0;
+            int primero = (PoblacionActual / 2) - 1;
+            int ultimo = (primero - medio) / 2;
+            while ((ind == -1) && (medio <= primero))
             {
-                if (num < ((double)this.tablaFitness[num3]))
+                if (randomFitness < ((double)tablaFitness[ultimo]))
                 {
-                    num5 = num3;
+                    primero = ultimo;
                 }
-                else if (num > ((double)this.tablaFitness[num3]))
+                else if (randomFitness > ((double)tablaFitness[ultimo]))
                 {
-                    num4 = num3;
+                    medio = ultimo;
                 }
-                num3 = (num4 + num5) / 2;
-                if ((num5 - num4) == 1)
+                ultimo = (medio + primero) / 2;
+                if ((primero - medio) == 1)
                 {
-                    num2 = num5;
+                    ind = primero;
                 }
             }
-            return num2;
+            return ind;
         }
 
+        //Se genera la siguiente generación
         public void SiguienteGeneracion()
         {
-            this.Generacion++;
-            this.CromosomasResultantes.Clear();
-            this.Cruce(this.Cromosomas);
-            this.Cromosomas = (ArrayList)this.CromosomasResultantes.Clone();
-            for (int i = 0; i < this.Cromosomas.Count; i++)
+            Generacion++;
+            CromosomasResultantes.Clear();
+
+            //Se realiza el cruce de cromosomas 
+            Cruce(Cromosomas);
+
+            Cromosomas = (ArrayList)CromosomasResultantes.Clone();
+            for (int i = 0; i < Cromosomas.Count; i++)
             {
-                ((Cromosoma)this.Cromosomas[i]).CalcularFitness();
+                ((Cromosoma)Cromosomas[i]).CalcularFitness();
             }
-            if (this.Cromosomas.Count > 0x3e8)
+            if (Cromosomas.Count > poblacionLimite)
             {
-                this.Cromosomas.RemoveRange(0x3e8, this.Cromosomas.Count - 0x3e8);
+                Cromosomas.RemoveRange(poblacionLimite, Cromosomas.Count - poblacionLimite);
             }
-            this.PoblacionActual = this.Cromosomas.Count;
-            this.RankPopulation();
+            PoblacionActual = Cromosomas.Count;
+            RankPopulation();
         }
 
     }

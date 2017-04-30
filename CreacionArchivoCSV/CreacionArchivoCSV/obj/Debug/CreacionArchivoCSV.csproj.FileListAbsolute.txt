@@ -7,3 +7,6 @@ c:\users\renzo\documents\visual studio 2015\Projects\CreacionArchivoCSV\Creacion
 C:\Users\Renzo\Source\Repos\geneticAlgorithm\CreacionArchivoCSV\CreacionArchivoCSV\bin\Debug\CreacionArchivoCSV.exe.config
 C:\Users\Renzo\Source\Repos\geneticAlgorithm\CreacionArchivoCSV\CreacionArchivoCSV\obj\Debug\CreacionArchivoCSV.exe
 C:\Users\Renzo\Source\Repos\geneticAlgorithm\CreacionArchivoCSV\CreacionArchivoCSV\obj\Debug\CreacionArchivoCSV.pdb
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\CreacionArchivoCSV\CreacionArchivoCSV\bin\Debug\CreacionArchivoCSV.exe
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\CreacionArchivoCSV\CreacionArchivoCSV\bin\Debug\CreacionArchivoCSV.pdb
+C:\Users\Renzo\Source\Repos\geneticAlgorithm\CreacionArchivoCSV\CreacionArchivoCSV\obj\Debug\CreacionArchivoCSV.csprojResolveAssemblyReference.cache

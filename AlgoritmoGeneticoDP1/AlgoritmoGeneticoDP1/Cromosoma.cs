@@ -9,194 +9,213 @@ namespace AlgoritmoGeneticoDP1
 {
     class Cromosoma
     {
-        // Fields
         public float FitnessActual;
         public long Length;
-        public int MutationIndex;
         public ArrayList TheArray;
         private int TheMax;
         private int TheMin;
         public static Random TheSeed = new Random((int)DateTime.Now.Ticks);
 
-        // Methods
         public Cromosoma()
         {
-            this.FitnessActual = 0f;
-            this.TheArray = new ArrayList();
-            this.TheMin = 0;
-            this.TheMax = 2;
+            FitnessActual = 0.0f;
+            TheArray = new ArrayList();
+            TheMin = 0;
+            TheMax = 2;
         }
 
+        //Genera un cromosoma de la población, teniendo en cuenta ciertas restricciones
         public Cromosoma(long length, object min, object max)
         {
-            this.FitnessActual = 0f;
-            this.TheArray = new ArrayList();
-            this.TheMin = 0;
-            this.TheMax = 2;
-            this.Length = length;
-            this.TheMin = (int)min;
-            this.TheMax = (int)max;
-            this.inicializarCromosoma();
+            FitnessActual = 0.0f;
+            TheArray = new ArrayList();
+            TheMin = 0;
+            TheMax = 2;
+            Length = length;
+            TheMin = (int)min;
+            TheMax = (int)max;
+            inicializarCromosoma();
             for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
             {
-                int num2 = (int)Poblacion.vacantes[i];
-                for (int j = 0; j < num2; j++)
+                int puestos = (int)Poblacion.vacantes[i];
+                for (int j = 0; j < puestos; j++)
                 {
+                    //Aquí se restringe que un trabajador solo puede estar asignado a un puesto de trabajo
+                    //y que el numero de trabajadores asignados a un puesto de trabajo no supere la cantidad
+                    //máxima de trabajadores en un puesto de trabajo
                     int trabajador = TheSeed.Next(0, Poblacion.numTrabajadores);
-                    if (!this.trabajadorDisponible(trabajador))
+                    if (!trabajadorDisponible(trabajador))
                     {
                         j--;
                     }
                     else
                     {
-                        int num5 = (trabajador * Poblacion.numPuestosDeTrabajo) + i;
-                        this.TheArray[num5] = 1;
+                        int ind = (trabajador * Poblacion.numPuestosDeTrabajo) + i;
+                        TheArray[ind] = 1;
                     }
                 }
             }
         }
 
+        //Devuelve el fitness de un cromosoma
         public float CalcularFitness()
         {
-            this.FitnessActual = this.CalcularProduccion();
-            return this.FitnessActual;
+            FitnessActual = CalcularProduccion();
+            return FitnessActual;
         }
 
+        //Se calcula la función objetivo para un determinado cromosoma 
         private float CalcularProduccion()
         {
-            this.FitnessActual = 0f;
+            int Xij, Tij, ind;
+            double Rij;
+            FitnessActual = 0.0f;
             for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
             {
                 for (int j = 0; j < Poblacion.numTrabajadores; j++)
                 {
-                    int num2 = (j * Poblacion.numPuestosDeTrabajo) + i;
-                    int num = (int)this.TheArray[num2];
-                    double num3 = (double)Poblacion.indiceError[num2];
-                    double num4 = (int)Poblacion.indiceTiempo[num2];
+                    ind = (j * Poblacion.numPuestosDeTrabajo) + i;
+                    Xij = (int)this.TheArray[ind];
+                    Rij = (double)Poblacion.indiceRotura[ind];
+                    Tij = (int)Poblacion.indiceTiempo[ind];
                     int duracionTurno = Poblacion.duracionTurno;
-                    if (num > 0)
+                    if (Xij > 0)
                     {
-                        this.FitnessActual += (float)Math.Truncate((double)(((double)duracionTurno) / (((1.0 + num3) * num4) * num)));
+                        FitnessActual += (float)Math.Truncate(((duracionTurno) / (((1.0 + Rij) * Tij) * Xij)));
                     }
                 }
             }
-            return this.FitnessActual;
+            return FitnessActual;
         }
 
-        public void CopiarCromosoma(out Cromosoma dest)
-        {
-            dest = new Cromosoma();
-            dest.Length = this.Length;
-            dest.TheMin = this.TheMin;
-            dest.TheMax = this.TheMax;
-            dest.FitnessActual = this.FitnessActual;
-            for (int i = 0; i < this.Length; i++)
-            {
-                dest.TheArray.Add(this.TheArray[i]);
-            }
-        }
-
+        //Se copia la información de un cromosoma a otro
         public void CopiarInformacionCromosoma(Cromosoma dest)
         {
             Cromosoma cromosoma = dest;
-            cromosoma.Length = this.Length;
-            cromosoma.TheMin = this.TheMin;
-            cromosoma.TheMax = this.TheMax;
+            cromosoma.Length = Length;
+            cromosoma.TheMin = TheMin;
+            cromosoma.TheMax = TheMax;
         }
 
+        //Se copia la información y contenido de un cromosoma a otro
+        public void CopiarCromosoma(out Cromosoma dest)
+        {
+            dest = new Cromosoma();
+            dest.Length = Length;
+            dest.TheMin = TheMin;
+            dest.TheMax = TheMax;
+            dest.FitnessActual = FitnessActual;
+            for (int i = 0; i < Length; i++)
+            {
+                dest.TheArray.Add(TheArray[i]);
+            }
+        }
+
+        //Operador Genético de cruce de tipo uniforme
         public void Cruzar_uniforme(ref Cromosoma cromosoma2, out Cromosoma hijo1, out Cromosoma hijo2)
         {
             hijo1 = new Cromosoma();
             hijo2 = new Cromosoma();
             cromosoma2.CopiarInformacionCromosoma(hijo1);
             cromosoma2.CopiarInformacionCromosoma(hijo2);
-            int num = 0;
+            int cont = 0;
             for (int i = 0; i < Poblacion.numTrabajadores; i++)
             {
                 for (int j = 0; j < Poblacion.numPuestosDeTrabajo; j++)
                 {
                     if ((i % 2) == 0)
                     {
-                        hijo1.TheArray.Add(this.TheArray[num]);
-                        hijo2.TheArray.Add(cromosoma2.TheArray[num]);
+                        hijo1.TheArray.Add(TheArray[cont]);
+                        hijo2.TheArray.Add(cromosoma2.TheArray[cont]);
                     }
                     else
                     {
-                        hijo2.TheArray.Add(this.TheArray[num]);
-                        hijo1.TheArray.Add(cromosoma2.TheArray[num]);
+                        hijo2.TheArray.Add(TheArray[cont]);
+                        hijo1.TheArray.Add(cromosoma2.TheArray[cont]);
                     }
-                    num++;
+                    cont++;
                 }
             }
         }
 
+        //Operador Genético de cruce de tipo one-point
         public void Cruzar_unpunto(ref Cromosoma cromosoma2, out Cromosoma hijo1, out Cromosoma hijo2)
         {
-            int num = TheSeed.Next(0, Poblacion.numTrabajadores);
-            int num2 = TheSeed.Next(0, Poblacion.numTrabajadores);
+            int trabajador1 = TheSeed.Next(0, Poblacion.numTrabajadores);
+            int trabajador2 = TheSeed.Next(0, Poblacion.numTrabajadores);
             hijo1 = new Cromosoma();
             hijo2 = new Cromosoma();
-            this.CopiarCromosoma(out hijo1);
+            CopiarCromosoma(out hijo1);
             cromosoma2.CopiarCromosoma(out hijo2);
             for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
             {
-                int num5 = (num * Poblacion.numPuestosDeTrabajo) + i;
-                int num6 = (num2 * Poblacion.numPuestosDeTrabajo) + i;
-                int num3 = (int)hijo1.TheArray[num5];
-                hijo1.TheArray[num5] = hijo2.TheArray[num6];
-                hijo2.TheArray[num6] = num3;
+                int ind1 = (trabajador1 * Poblacion.numPuestosDeTrabajo) + i;
+                int ind2 = (trabajador2 * Poblacion.numPuestosDeTrabajo) + i;
+                int aux = (int)hijo1.TheArray[ind1];
+                hijo1.TheArray[ind1] = hijo2.TheArray[ind2];
+                hijo2.TheArray[ind2] = aux;
             }
         }
 
+        //Verifica que un cromosoma tenga una estructura valida
         public bool esValido()
         {
-            ArrayList list = new ArrayList();
+            //Arreglo auxiliar de cantidades acumuladas de trabajadores asignados en cada puesto de trabajo
+            ArrayList asignaciones = new ArrayList();
             for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
             {
-                list.Add(0);
+                asignaciones.Add(0);
             }
-            int num = 0;
-            int num2 = 0;
+            int cont = 0;
+            int puesto = 0;
             for (int j = 0; j < Poblacion.numTrabajadores; j++)
             {
-                int num5 = 0;
+                int cantidadAsignaciones = 0;
                 for (int k = 0; k < Poblacion.numPuestosDeTrabajo; k++)
                 {
-                    num5 += (int)this.TheArray[num];
-                    if (((int)this.TheArray[num]) == 1)
+                    cantidadAsignaciones += (int)TheArray[cont];
+                    if (((int)TheArray[cont]) == 1)
                     {
-                        num2 = num % Poblacion.numPuestosDeTrabajo;
-                        list[num2] = ((int)list[num2]) + 1;
+                        //Aquí se va acumulando el arreglo auxiliar 
+                        puesto = cont % Poblacion.numPuestosDeTrabajo;
+                        asignaciones[puesto] = ((int)asignaciones[puesto]) + 1;
                     }
-                    if (((int)list[num2]) > ((int)Poblacion.vacantes[num2]))
-                    {
-                        return false;
-                    }
-                    if (num5 > 1)
+                    //Verificación de cantidad acumulada de trabajadores no sobrepase el máximo de trabajadores en un puesto de trabajo
+                    if (((int)asignaciones[puesto]) > ((int)Poblacion.vacantes[puesto]))
                     {
                         return false;
                     }
-                    num++;
+
+                    //Verificación de un trabajador solo puede estar asignado a un puesto de trabajo
+                    if (cantidadAsignaciones > 1)
+                    {
+                        return false;
+                    }
+                    cont++;
                 }
-                if (num5 != 1)
+
+                //Esto indica que un trabajador debe estar siempre asignado a un puesto de trabajo
+                /*if (cantidadAsignaciones != 1)
                 {
                     return false;
-                }
+                }*/
+                //Hemos comentado esto porque asumimos que el numero de trabajadores es mayor o igual que el numero de vacantes por puestos de trabajo,
+                //puede que un trabajador no esté asignado a un puesto de trabajo
             }
             return true;
         }
 
         private void inicializarCromosoma()
         {
-            for (int i = 0; i < this.Length; i++)
+            for (int i = 0; i < Length; i++)
             {
-                this.TheArray.Add(0);
+                TheArray.Add(0);
             }
         }
 
         public void mostrarAsignaciones()
         {
-            Console.WriteLine("N\x00famero de trabajadores: " + Poblacion.numTrabajadores);
+            Console.WriteLine("Número de trabajadores: " + Poblacion.numTrabajadores);
             Console.WriteLine("Cantidad de vacantes por puesto: ");
             for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
             {
@@ -206,65 +225,75 @@ namespace AlgoritmoGeneticoDP1
             for (int j = 0; j < Poblacion.numTrabajadores; j++)
             {
                 Console.Write("Trabajador " + (j + 1) + ": ");
-                int num3 = 0;
+                int suma = 0;
                 for (int k = 0; k < Poblacion.numPuestosDeTrabajo; k++)
                 {
-                    int num5 = (j * Poblacion.numPuestosDeTrabajo) + k;
-                    num3 += (int)this.TheArray[num5];
-                    if (((int)this.TheArray[num5]) == 1)
+                    int indice = (j * Poblacion.numPuestosDeTrabajo) + k;
+                    suma += (int)TheArray[indice];
+                    if (((int)TheArray[indice]) == 1)
                     {
                         Console.WriteLine("Asignado a Puesto " + (k + 1));
                     }
                 }
-                if (num3 == 0)
+                if (suma == 0)
                 {
-                    Console.WriteLine("No asignado a ning\x00fan puesto de trabajo");
+                    Console.WriteLine("No asignado a ningún puesto de trabajo");
                 }
             }
         }
 
         public void mostrarCromosoma()
         {
-            Console.WriteLine(this.ToString());
+            Console.WriteLine(ToString());
         }
 
+        //Operador genético de mutación 
         public void Mutar()
         {
-            int num = TheSeed.Next(Poblacion.numTrabajadores);
+            //Indica el indice de un trabajador elegido aleatoriamente
+            int indiceTrabajador = TheSeed.Next(Poblacion.numTrabajadores); 
+
+            //Indica el número de puestos de trabajo
             int numPuestosDeTrabajo = Poblacion.numPuestosDeTrabajo;
-            int num3 = 0;
-            int num4 = (numPuestosDeTrabajo * num) + TheSeed.Next(Poblacion.numPuestosDeTrabajo);
+
+            //Indica el indice de un puesto de trabajo del trabajador elegido
+            int indice = 0;
+
+            //Indica el indice de un puesto de trabajo del trabajador elegido a mutar
+            int indiceMutacion = (numPuestosDeTrabajo * indiceTrabajador) + TheSeed.Next(Poblacion.numPuestosDeTrabajo);
+
+            //Se procede a realizar la mutación cambiando solo una casilla en el rango de un trabajador
             for (int i = 0; i < numPuestosDeTrabajo; i++)
             {
-                num3 = (numPuestosDeTrabajo * num) + i;
-                if (((int)this.TheArray[num3]) == 1)
+                indice = (numPuestosDeTrabajo * indiceTrabajador) + i;
+                if (((int)TheArray[indice]) == 1)
                 {
-                    this.TheArray[num3] = 0;
+                    TheArray[indice] = 0;
                     break;
                 }
             }
-            this.TheArray[num4] = 1;
+            TheArray[indiceMutacion] = 1;
         }
 
         public override string ToString()
         {
             string str = "";
-            for (int i = 0; i < this.Length; i++)
+            for (int i = 0; i < Length; i++)
             {
-                str = str + ((int)this.TheArray[i]).ToString() + " ";
+                str = str + ((int)TheArray[i]).ToString() + " ";
             }
-            return (str + "-->" + this.FitnessActual.ToString());
+            return (str + "-->" + FitnessActual.ToString());
         }
 
         private bool trabajadorDisponible(int trabajador)
         {
-            int num = trabajador * Poblacion.numPuestosDeTrabajo;
-            int num2 = 0;
-            for (int i = num; i < (num + Poblacion.numPuestosDeTrabajo); i++)
+            int indice = trabajador * Poblacion.numPuestosDeTrabajo;
+            int suma = 0;
+            for (int i = indice; i < (indice + Poblacion.numPuestosDeTrabajo); i++)
             {
-                num2 += (int)this.TheArray[i];
+                suma += (int)TheArray[i];
             }
-            if (num2 > 0)
+            if (suma > 0)
             {
                 return false;
             }

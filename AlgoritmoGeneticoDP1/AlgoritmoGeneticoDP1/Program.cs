@@ -10,103 +10,130 @@ namespace AlgoritmoGeneticoDP1
 {
     class Program
     {
-        // Methods
+
+        public static void leerDataEntrada(ref int numPuestosdeTrabajo, ref int numTrabajadores, ref int duracionTurno, ArrayList indicesError, ArrayList indicesTiempo, ArrayList vacantes)
+        {
+            StreamReader file = new StreamReader("data_input.csv");
+
+            //Leer cabeceras principales
+            file.ReadLine();
+
+            //Lectura de numero de trabajadores
+            //Lectura de numero de puestos de trabajo
+            //Lectura de alfa
+            //Lectura de duracion de turno 
+            string[] line = file.ReadLine().Split(',');
+            numTrabajadores = Convert.ToInt32(line[0]);
+            numPuestosdeTrabajo = Convert.ToInt32(line[1]);
+            double alfa = Convert.ToDouble(line[2]);   //No se usa alfa en algoritmo genético
+            duracionTurno = Convert.ToInt32(line[3]);
+
+            file.ReadLine();
+
+            //Lectura de cabecera indices de error
+            string cabeceraIndices = file.ReadLine();
+
+            //Lectura indices de error de cada trabajador
+            for (int j = 0; j < numTrabajadores; j++)
+            {
+
+                line = file.ReadLine().Split(',');
+                for (int m = 0; m < numPuestosdeTrabajo; m++)
+                {
+                    indicesError.Add(Convert.ToDouble(line[m + 1]));
+                }
+            }
+
+            file.ReadLine();
+
+            //Lectura de cabecera indices de tiempo
+            cabeceraIndices = file.ReadLine();
+
+            //Lectura indices de tiempo de cada trabajador
+            for (int k = 0; k < numTrabajadores; k++)
+            {
+
+                line = file.ReadLine().Split(',');
+                for (int n = 0; n < numPuestosdeTrabajo; n++)
+                {
+                    indicesTiempo.Add(Convert.ToInt32(line[n + 1]));
+                }
+            }
+
+            file.ReadLine();
+
+            //lectura de vacantes
+            line = file.ReadLine().Split(',');
+            for (int i = 0; i < numPuestosdeTrabajo; i++)
+            {
+                vacantes.Add(Convert.ToInt32(line[i + 1]));
+            }
+             
+            file.Close();
+        }
+
         [STAThread]
         private static void Main(string[] args)
         {
-            int numPuestosdeTrabajo = 0;
-            int td = 480;
-            int numTrabajadores = 0;
-            ArrayList indicesError = new ArrayList();
-            ArrayList indicesTiempo = new ArrayList();
-            ArrayList vacantes = new ArrayList();
-            readDataInput(ref numPuestosdeTrabajo, ref numTrabajadores, indicesError, indicesTiempo, vacantes);
-            Poblacion poblacion = new Poblacion(numTrabajadores, numPuestosdeTrabajo, td, vacantes, indicesError, indicesTiempo);
-            Cromosoma cromosoma = poblacion.obtenerMejorCromosoma();
-            Cromosoma cromosoma2 = new Cromosoma();
-            int num4 = 1;
-            int num5 = 0;
-            int num6 = 0;
-            Console.WriteLine("Generaci\x00f3n " + num4);
-            cromosoma.mostrarCromosoma();
-            while ((num6 < 0x3e8) && (num5 < 5))
-            {
-                poblacion.SiguienteGeneracion();
-                Cromosoma cromosoma3 = poblacion.obtenerMejorCromosoma();
-                if (cromosoma3.FitnessActual > cromosoma.FitnessActual)
+            int numPuestosdeTrabajo = 0;    //Indica el numero de puestos de trabajo
+            int duracionTurno = 0;        //Indica la duracion total de un dia de trabajo en minutos
+            int numTrabajadores = 0;        //Indica el numero de trabajadores en un dia de trabajo
+            ArrayList indicesRotura = new ArrayList();   //Indica los indices de rotura de cada trabajador en cada puesto de trabajo
+            ArrayList indicesTiempo = new ArrayList();  //Indica los indices de tiempo de cada trabajador en cada puesto de trabajo
+            ArrayList vacantes = new ArrayList();       //Indica las vacantes maximas de trabajadores en cada puesto de trabajo
+
+            //Se procede a leer la data inicial desde un archivo .csv
+            leerDataEntrada(ref numPuestosdeTrabajo, ref numTrabajadores, ref duracionTurno, indicesRotura, indicesTiempo, vacantes);
+
+            //Se genera la población inicial 
+            Poblacion poblacion = new Poblacion(numTrabajadores, numPuestosdeTrabajo, duracionTurno, vacantes, indicesRotura, indicesTiempo);
+
+            Cromosoma mejorCromosoma = poblacion.obtenerMejorCromosoma();   //Se obtiene el mejor cromosoma de la poblacion inicial
+            Cromosoma ultimoCromosoma = new Cromosoma();
+            int generacion = 1;                 //Indica el numero de la generacion
+            int repetido = 0;                   //Indica la cantidad de veces que el fitness del mejor cromosoma no cambia
+            int i = 0;
+            Console.WriteLine("Generación " + generacion);
+            mejorCromosoma.mostrarCromosoma();     
+            while ((i < 1000) && (repetido < 5))        //Condicion de parada del algoritmo genetico, ya sea 1000 generaciones o 
+            {                                           //que el mejor cromosoma sea el mismo por 5 generaciones seguidas
+
+                poblacion.SiguienteGeneracion();        //Se procede a generar la siguiente generacion 
+
+                //Se obtiene el mejor cromosoma de la actual generacion
+                Cromosoma nuevoCromosoma = poblacion.obtenerMejorCromosoma();   
+
+                //Se compara si el mejor cromosoma de la generacion actual es mejor que el mejor cromosoma historico
+                if (nuevoCromosoma.FitnessActual > mejorCromosoma.FitnessActual)
                 {
-                    cromosoma = cromosoma3;
+                    mejorCromosoma = nuevoCromosoma;
                 }
-                if (Math.Truncate((double)cromosoma3.FitnessActual) == Math.Truncate((double)cromosoma2.FitnessActual))
+
+                if (Math.Truncate(nuevoCromosoma.FitnessActual) == Math.Truncate(ultimoCromosoma.FitnessActual))
                 {
-                    num5++;
+                    //Si el mejor cromosoma de la generacion actual es igual al mejor cromosoma de la generacion anterior
+                    repetido++;
                 }
                 else
                 {
-                    num5 = 0;
+                    //Si el mejor cromosoma de la generacion actual no es igual al mejor cromosoma de la generacion anterior
+                    repetido = 0;
                 }
-                num6++;
-                num4++;
-                cromosoma2 = cromosoma3;
-                cromosoma3.mostrarCromosoma();
-                Console.WriteLine("Generaci\x00f3n " + num4);
+                i++;
+                generacion++;
+
+                //Se guarda el mejor cromosoma actual para tenerlo en cuenta en la siguiente generacion
+                ultimoCromosoma = nuevoCromosoma;  
+                nuevoCromosoma.mostrarCromosoma();
+                Console.WriteLine("Generación " + generacion);
             }
-            cromosoma.mostrarCromosoma();
-            cromosoma.mostrarAsignaciones();
-            Console.WriteLine(cromosoma.esValido());
+            mejorCromosoma.mostrarCromosoma();
+            mejorCromosoma.mostrarAsignaciones();   //Se muestran las asignaciones correspondientes
+            Console.WriteLine(mejorCromosoma.esValido());
             Console.ReadLine();
         }
 
-        public static void readArrays(StreamReader file, int numWorkplaces, int numWorkers, ArrayList array)
-        {
-            for (int i = 0; i < numWorkers; i++)
-            {
-                char[] separator = new char[] { ',' };
-                string[] strArray = file.ReadLine().Split(separator);
-                for (int j = 0; j < numWorkplaces; j++)
-                {
-                    array.Add(Convert.ToDouble(strArray[j]));
-                }
-            }
-        }
-
-        public static void readDataInput(ref int numPuestosdeTrabajo, ref int numTrabajadores, ArrayList indicesError, ArrayList indicesTiempo, ArrayList vacantes)
-        {
-            StreamReader reader = new StreamReader("prueba.csv");
-            char[] separator = new char[] { ',' };
-            string[] strArray = reader.ReadLine().Split(separator);
-            numTrabajadores = Convert.ToInt32(strArray[1]);
-            char[] chArray2 = new char[] { ',' };
-            strArray = reader.ReadLine().Split(chArray2);
-            numPuestosdeTrabajo = Convert.ToInt32(strArray[1]);
-            char[] chArray3 = new char[] { ',' };
-            strArray = reader.ReadLine().Split(chArray3);
-            for (int i = 0; i < numPuestosdeTrabajo; i++)
-            {
-                vacantes.Add(Convert.ToInt32(strArray[i + 1]));
-            }
-            string str = reader.ReadLine();
-            for (int j = 0; j < numTrabajadores; j++)
-            {
-                char[] chArray4 = new char[] { ',' };
-                strArray = reader.ReadLine().Split(chArray4);
-                for (int m = 0; m < numPuestosdeTrabajo; m++)
-                {
-                    indicesError.Add(Convert.ToDouble(strArray[m + 1]));
-                }
-            }
-            str = reader.ReadLine();
-            for (int k = 0; k < numTrabajadores; k++)
-            {
-                char[] chArray5 = new char[] { ',' };
-                strArray = reader.ReadLine().Split(chArray5);
-                for (int n = 0; n < numPuestosdeTrabajo; n++)
-                {
-                    indicesTiempo.Add(Convert.ToInt32(strArray[n + 1]));
-                }
-            }
-            reader.Close();
-        }
+        
 
     }
 }
