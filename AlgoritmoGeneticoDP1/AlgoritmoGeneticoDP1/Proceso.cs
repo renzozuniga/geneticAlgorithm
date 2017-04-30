@@ -9,12 +9,14 @@ namespace AlgoritmoGeneticoDP1
     class Proceso
     {
         public int id;
+        public string nombre;
         public int vacantes;
 
-        public Proceso(int i, int vac)
+        public Proceso(int i, int vac, string nomb)
         {
             id = i;
             vacantes = vac;
+            nombre = nomb;
         }
 
        /* public void asignarTrabajador(Trabajador trab)

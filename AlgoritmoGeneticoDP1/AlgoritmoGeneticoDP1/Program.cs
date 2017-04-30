@@ -35,7 +35,7 @@ namespace AlgoritmoGeneticoDP1
             // Creando los trabajadores
             for (int i = 0; i < numTrabajadores; i++)
             {
-                Trabajador trabajador = new Trabajador(i + 1);
+                Trabajador trabajador = new Trabajador(i,"Trabajador "+(i+1));
                 trabajadores.Add(trabajador);
             }
 
@@ -75,9 +75,8 @@ namespace AlgoritmoGeneticoDP1
             {
                 //Indica las vacantes maximas de trabajadores en cada puesto de trabajo
                 int vacantes = Convert.ToInt32(line[i + 1]);
-                Proceso proceso = new Proceso(i + 1, vacantes);
+                Proceso proceso = new Proceso(i, vacantes,"Proceso "+(i+1));
                 procesos.Add(proceso);
-
             }
             file.Close();
         }
@@ -86,8 +85,8 @@ namespace AlgoritmoGeneticoDP1
         private static void Main(string[] args)
         {
             int duracionTurno = 0;        //Indica la duracion total de un dia de trabajo en minutos
-            ArrayList trabajadores = new ArrayList();   //Indica los indices de rotura de cada trabajador en cada puesto de trabajo
-            ArrayList procesos = new ArrayList();  //Indica los indices de tiempo de cada trabajador en cada puesto de trabajo
+            ArrayList trabajadores = new ArrayList();   
+            ArrayList procesos = new ArrayList();
 
             //Se procede a leer la data inicial desde un archivo .csv
             leerDataEntrada(trabajadores, procesos, ref duracionTurno);
@@ -96,11 +95,14 @@ namespace AlgoritmoGeneticoDP1
 
             Cromosoma mejorCromosoma = poblacion.obtenerMejorCromosoma();   //Se obtiene el mejor cromosoma de la poblacion inicial
             Cromosoma ultimoCromosoma = new Cromosoma();
+
             int generacion = 1;                 //Indica el numero de la generacion
             int repetido = 0;                   //Indica la cantidad de veces que el fitness del mejor cromosoma no cambia
             int i = 0;
+
             Console.WriteLine("Generación " + generacion);
-            mejorCromosoma.mostrarCromosoma();     
+            mejorCromosoma.mostrarCromosoma();
+
             while ((i < 1000) && (repetido < 5))        //Condicion de parada del algoritmo genetico, ya sea 1000 generaciones o 
             {                                           //que el mejor cromosoma sea el mismo por 5 generaciones seguidas
 

@@ -10,19 +10,14 @@ namespace AlgoritmoGeneticoDP1
     class Trabajador
     {
         public int id = -1;
+        public string nombre;
         public ArrayList indicesRotura = new ArrayList(); // entre 0 y 1
         public ArrayList indicesTiempo = new ArrayList(); //en minutos
 
-        public Trabajador(int id)
+        public Trabajador(int id,string nombre)
         {
             this.id = id;
-        }
-
-        public Trabajador(int id, ArrayList indicesRotura, ArrayList indicesTiempo)
-        {
-            this.id = id;
-            this.indicesRotura = (ArrayList)indicesRotura.Clone();
-            this.indicesTiempo = (ArrayList)indicesTiempo.Clone();
+            this.nombre = nombre;
         }
 
         public double CalcularIndiceProceso(Proceso proc)

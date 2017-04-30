@@ -15,11 +15,6 @@ namespace AlgoritmoGeneticoDP1
         public static int duracionTurno;
         private int Generacion = 1;
 
-
-        public static ArrayList indiceRotura = new ArrayList();
-        public static ArrayList indiceTiempo = new ArrayList();
-
-
         private const float kDeathFitness = 0.0f;
         private const int kMax = 2;
         private const int kMin = 0;
@@ -34,10 +29,6 @@ namespace AlgoritmoGeneticoDP1
         private ArrayList tablaFitness = new ArrayList();
         private double totalFitness;
 
-
-        public static ArrayList vacantes = new ArrayList();
-
-
         public static ArrayList trabajadores = new ArrayList();
         public static ArrayList procesos = new ArrayList();
 
@@ -48,25 +39,13 @@ namespace AlgoritmoGeneticoDP1
             numTrabajadores = trab.Count;
             numPuestosDeTrabajo = proc.Count;
             duracionTurno = td;
-            for(int i = 0; i < proc.Count; i++)
-            {
-                procesos.Add(((Proceso)proc[i]));
-                vacantes.Add(((Proceso)proc[i]).vacantes);
-            }
-            for(int i = 0; i < trab.Count; i++)
-            {
-                trabajadores.Add(((Trabajador)trab[i]));
-                for (int j = 0; j < proc.Count; j++)
-                {
-                    indiceRotura.Add(((Trabajador)trab[i]).indicesRotura[j]);
-                    indiceTiempo.Add(((Trabajador)trab[i]).indicesTiempo[j]);
-                }
-                
-            }
+            procesos = proc;
+            trabajadores = trab;
+
             for (int i = 0; i < poblacionInicial; i++)
             {
                 //Aquí se generan los cromosomas de la poblacion inicial
-                Cromosoma cromosoma = new Cromosoma(numPuestosDeTrabajo * numTrabajadores, 0, 2);
+                Cromosoma cromosoma = new Cromosoma(numPuestosDeTrabajo * numTrabajadores, kMin, kMax);
                 cromosoma.CalcularFitness();
                 Cromosomas.Add(cromosoma);
             }

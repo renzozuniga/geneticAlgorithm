@@ -29,16 +29,15 @@ namespace AlgoritmoGeneticoDP1
         {
             FitnessActual = 0.0f;
             TheArray = new ArrayList();
-            TheMin = 0;
-            TheMax = 2;
             Length = length;
             TheMin = (int)min;
             TheMax = (int)max;
+
             inicializarCromosoma();
             for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
             {
-                int puestos = (int)Poblacion.vacantes[i];
-                for (int j = 0; j < puestos; j++)
+                int vacantes = ((Proceso)Poblacion.procesos[i]).vacantes;
+                for (int j = 0; j < vacantes; j++)
                 {
                     //Aquí se restringe que un trabajador solo puede estar asignado a un puesto de trabajo
                     //y que el numero de trabajadores asignados a un puesto de trabajo no supere la cantidad
@@ -67,21 +66,24 @@ namespace AlgoritmoGeneticoDP1
         //Se calcula la función objetivo para un determinado cromosoma 
         private float CalcularProduccion()
         {
-            int Xij, Tij, ind;
-            double Rij;
+            int Xij, ind;
             FitnessActual = 0.0f;
+
+            Trabajador trabajador;
+            Proceso proceso;
+
             for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
             {
+                proceso = (Proceso)Poblacion.procesos[i];
                 for (int j = 0; j < Poblacion.numTrabajadores; j++)
                 {
+                    trabajador = (Trabajador)Poblacion.trabajadores[j];
                     ind = (j * Poblacion.numPuestosDeTrabajo) + i;
                     Xij = (int)this.TheArray[ind];
-                    Rij = (double)Poblacion.indiceRotura[ind];
-                    Tij = (int)Poblacion.indiceTiempo[ind];
                     int duracionTurno = Poblacion.duracionTurno;
                     if (Xij > 0)
                     {
-                        FitnessActual += (float)Math.Truncate(((duracionTurno) / (((1.0 + Rij) * Tij) * Xij)));
+                        FitnessActual += (float)Math.Truncate(duracionTurno / (trabajador.CalcularIndiceProceso(proceso) * Xij));
                     }
                 }
             }
@@ -167,21 +169,18 @@ namespace AlgoritmoGeneticoDP1
                 asignaciones.Add(0);
             }
             int cont = 0;
-            int puesto = 0;
-            for (int j = 0; j < Poblacion.numTrabajadores; j++)
+            for (int i = 0; i < Poblacion.numTrabajadores; i++)
             {
                 int cantidadAsignaciones = 0;
-                for (int k = 0; k < Poblacion.numPuestosDeTrabajo; k++)
+                for (int j = 0; j < Poblacion.numPuestosDeTrabajo; j++)
                 {
                     cantidadAsignaciones += (int)TheArray[cont];
                     if (((int)TheArray[cont]) == 1)
                     {
-                        //Aquí se va acumulando el arreglo auxiliar 
-                        puesto = cont % Poblacion.numPuestosDeTrabajo;
-                        asignaciones[puesto] = ((int)asignaciones[puesto]) + 1;
+                        asignaciones[j] = ((int)asignaciones[j]) + 1;
                     }
                     //Verificación de cantidad acumulada de trabajadores no sobrepase el máximo de trabajadores en un puesto de trabajo
-                    if (((int)asignaciones[puesto]) > ((int)Poblacion.vacantes[puesto]))
+                    if ((int)asignaciones[j] > ((Proceso)Poblacion.procesos[j]).vacantes)
                     {
                         return false;
                     }
@@ -219,12 +218,12 @@ namespace AlgoritmoGeneticoDP1
             Console.WriteLine("Cantidad de vacantes por puesto: ");
             for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
             {
-                Console.Write("Puesto " + ((Proceso)(Poblacion.procesos[i])).id + ": ");
-                Console.WriteLine(Poblacion.vacantes[i]);
+                Console.Write(((Proceso)(Poblacion.procesos[i])).nombre + ": ");
+                Console.WriteLine(((Proceso)Poblacion.procesos[i]).vacantes);
             }
             for (int j = 0; j < Poblacion.numTrabajadores; j++)
             {
-                Console.Write("Trabajador " + ((Trabajador)(Poblacion.trabajadores[j])).id + ": ");
+                Console.Write(((Trabajador)(Poblacion.trabajadores[j])).nombre + ": ");
                 int suma = 0;
                 for (int k = 0; k < Poblacion.numPuestosDeTrabajo; k++)
                 {
@@ -232,7 +231,7 @@ namespace AlgoritmoGeneticoDP1
                     suma += (int)TheArray[indice];
                     if (((int)TheArray[indice]) == 1)
                     {
-                        Console.WriteLine("Asignado a Puesto " + ((Proceso)(Poblacion.procesos[k])).id);
+                        Console.WriteLine("Asignado a " + ((Proceso)(Poblacion.procesos[k])).nombre);
                     }
                 }
                 if (suma == 0)
