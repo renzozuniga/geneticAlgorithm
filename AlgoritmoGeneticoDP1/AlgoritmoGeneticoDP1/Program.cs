@@ -94,6 +94,8 @@ namespace AlgoritmoGeneticoDP1
             leerDataEntrada(trabajadores, procesos, ref duracionTurno);
             StreamWriter reporte = new StreamWriter("reporte.txt");
 
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
             //Se genera la población inicial
             int generacion = 1; //Indica el numero de la generacion
             Poblacion poblacion = new Poblacion(trabajadores, procesos, duracionTurno);
@@ -153,6 +155,11 @@ namespace AlgoritmoGeneticoDP1
             //Console.WriteLine("Asignaciones");
             //mejorCromosoma.mostrarAsignaciones();
             mejorCromosoma.exportarCSV();
+
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.WriteLine("Tiempo del algoritmo {0} segundos.", elapsedMs / 1000.0);
+            Console.WriteLine("Fitness del mejor cromosoma {0}.", mejorCromosoma.FitnessActual);
             Console.WriteLine("Presione ENTER para continuar");
             Console.ReadLine();
         }
