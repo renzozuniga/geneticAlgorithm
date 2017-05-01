@@ -90,7 +90,7 @@ namespace CreacionArchivoCSV
             }
             csv.AppendLine(cadena);
 
-            File.WriteAllText("./data_input.csv", csv.ToString());
+            File.WriteAllText("./data_input.csv", csv.ToString(), Encoding.UTF8);
 
         }
 

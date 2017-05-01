@@ -150,9 +150,9 @@ namespace AlgoritmoGeneticoDP1
             reporte.Close();
 
             // Se muestran las asignaciones correspondientes
-            Console.WriteLine("Asignaciones");
-            mejorCromosoma.mostrarAsignaciones();
-            // mejorCromosoma.exportarCSV();
+            //Console.WriteLine("Asignaciones");
+            //mejorCromosoma.mostrarAsignaciones();
+            mejorCromosoma.exportarCSV();
             Console.WriteLine("Presione ENTER para continuar");
             Console.ReadLine();
         }

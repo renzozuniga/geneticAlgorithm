@@ -317,5 +317,45 @@ namespace AlgoritmoGeneticoDP1
             return true;
         }
 
+        public void exportarCSV()
+        {
+            var csv = new StringBuilder();
+            csv.AppendLine("Asignaciones");
+            csv.AppendLine(" ");
+            csv.AppendLine("Número de trabajadores," + Poblacion.numTrabajadores);
+            csv.AppendLine(" ");
+            csv.AppendLine("Cantidad de vacantes por puesto");
+            for(int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
+            {
+                csv.AppendLine(((Proceso)(Poblacion.procesos[i])).nombre + "," + ((Proceso)Poblacion.procesos[i]).vacantes);
+            }
+            csv.AppendLine(" ");
+            for (int j = 0; j < Poblacion.numTrabajadores; j++)
+            {
+                string asignacionTrabajador = ((Trabajador)(Poblacion.trabajadores[j])).nombre + ",";
+                int suma = 0;
+                for (int k = 0; k < Poblacion.numPuestosDeTrabajo; k++)
+                {
+                    int indice = (j * Poblacion.numPuestosDeTrabajo) + k;
+                    suma += (int)TheArray[indice];
+                    if (((int)TheArray[indice]) == 1)
+                    {
+                        asignacionTrabajador += "Asignado a " + ((Proceso)(Poblacion.procesos[k])).nombre;
+                    }
+                }
+                if (suma == 0)
+                {
+                    asignacionTrabajador += "No asignado a ningún puesto de trabajo";
+                }
+                csv.AppendLine(asignacionTrabajador);
+            }
+
+            var streamWriter = new StreamWriter("./resultado_asignacion.csv", false, Encoding.Unicode);
+            streamWriter.Write(csv.ToString());
+            streamWriter.Flush();
+            streamWriter.Close();
+
+        }
+
     }
 }
