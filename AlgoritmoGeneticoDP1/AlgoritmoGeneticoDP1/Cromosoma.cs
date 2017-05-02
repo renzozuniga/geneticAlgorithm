@@ -126,7 +126,8 @@ namespace AlgoritmoGeneticoDP1
             {
                 for (int j = 0; j < Poblacion.numPuestosDeTrabajo; j++)
                 {
-                    if ((i % 2) == 0)
+                    int indicador = TheSeed.Next(0, 2);
+                    if (indicador == 0)
                     {
                         hijo1.TheArray.Add(TheArray[cont]);
                         hijo2.TheArray.Add(cromosoma2.TheArray[cont]);
@@ -144,19 +145,29 @@ namespace AlgoritmoGeneticoDP1
         //Operador Genético de cruce de tipo one-point
         public void Cruce_unpunto(ref Cromosoma cromosoma2, out Cromosoma hijo1, out Cromosoma hijo2)
         {
-            int trabajador1 = TheSeed.Next(0, Poblacion.numTrabajadores);
-            int trabajador2 = TheSeed.Next(0, Poblacion.numTrabajadores);
+            int punto = TheSeed.Next(1, Poblacion.numTrabajadores);
             hijo1 = new Cromosoma();
             hijo2 = new Cromosoma();
-            CopiarCromosoma(out hijo1);
-            cromosoma2.CopiarCromosoma(out hijo2);
-            for (int i = 0; i < Poblacion.numPuestosDeTrabajo; i++)
+            CopiarInformacionCromosoma(hijo1);
+            CopiarInformacionCromosoma(hijo2);
+
+            int cont = 0;
+
+            for (int i = 0; i < Poblacion.numTrabajadores; i++)
             {
-                int ind1 = (trabajador1 * Poblacion.numPuestosDeTrabajo) + i;
-                int ind2 = (trabajador2 * Poblacion.numPuestosDeTrabajo) + i;
-                int aux = (int)hijo1.TheArray[ind1];
-                hijo1.TheArray[ind1] = hijo2.TheArray[ind2];
-                hijo2.TheArray[ind2] = aux;
+                for (int j = 0; j < Poblacion.numPuestosDeTrabajo; j++)
+                {
+                    if (i < punto)
+                    {
+                        hijo1.TheArray.Add(TheArray[cont]);
+                        hijo2.TheArray.Add(cromosoma2.TheArray[cont]);
+                    } else
+                    {
+                        hijo1.TheArray.Add(cromosoma2.TheArray[cont]);
+                        hijo2.TheArray.Add(TheArray[cont]);
+                    }
+                    cont++;
+                }
             }
         }
 

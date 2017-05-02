@@ -237,11 +237,6 @@ namespace AlgoritmoGeneticoDP1
             {
                 ((Cromosoma)Cromosomas[i]).CalcularFitness();
             }
-            if (Cromosomas.Count > poblacionLimite)
-            {
-                Cromosomas.RemoveRange(poblacionLimite, Cromosomas.Count - poblacionLimite);
-            }
-            PoblacionActual = Cromosomas.Count;
             RankPopulation();
         }
 
