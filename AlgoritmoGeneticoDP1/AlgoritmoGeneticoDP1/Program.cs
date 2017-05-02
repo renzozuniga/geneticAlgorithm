@@ -19,13 +19,13 @@ namespace AlgoritmoGeneticoDP1
             int numTrabajadores = 0;        //Indica el numero de trabajadores en un dia de trabajo
             StreamReader file = new StreamReader("data_input.csv");
 
-            //Leer cabeceras principales
+            // Leer cabeceras principales
             file.ReadLine();
 
-            //Lectura de numero de trabajadores
-            //Lectura de numero de puestos de trabajo
-            //Lectura de alfa
-            //Lectura de duracion de turno 
+            // Lectura de numero de trabajadores
+            // Lectura de numero de puestos de trabajo
+            // Lectura de alfa
+            // Lectura de duracion de turno 
             string[] line = file.ReadLine().Split(',');
             numTrabajadores = Convert.ToInt32(line[0]);
             numPuestosdeTrabajo = Convert.ToInt32(line[1]);
