@@ -26,7 +26,7 @@ namespace CreacionArchivoCSV
                 numVacantes += (int)value;
             }
 
-            int numTrabajadores = numVacantes + TheSeed.Next(0, 15);
+            int numTrabajadores = 50;
 
             //before your loop
             var csv = new StringBuilder();
@@ -89,6 +89,16 @@ namespace CreacionArchivoCSV
                 cadena += vacantes[i] + ",";
             }
             csv.AppendLine(cadena);
+
+            csv.AppendLine(" ");
+
+            cadena = "HaceONoHace,";
+            for (int i = 0; i < numPuestosDeTrabajo; i++)
+            {
+                cadena += "1,";
+            }
+            csv.AppendLine(cadena);
+
 
             File.WriteAllText("./data_input.csv", csv.ToString(), Encoding.UTF8);
 
