@@ -29,7 +29,7 @@ namespace AlgoritmoGeneticoDP1
             string[] line = file.ReadLine().Split(',');
             numTrabajadores = Convert.ToInt32(line[0]);
             numPuestosdeTrabajo = Convert.ToInt32(line[1]);
-            double alfa = Convert.ToDouble(line[2]);   //No se usa alfa en algoritmo genético
+            double alfa = Convert.ToDouble(line[2]); //No se usa alfa en algoritmo genético
             duracionTurno = Convert.ToInt32(line[3]);
 
             file.ReadLine();
